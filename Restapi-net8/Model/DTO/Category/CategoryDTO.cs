@@ -1,4 +1,4 @@
-﻿namespace Restapi_net8.Model.DTO
+﻿namespace Restapi_net8.Model.DTO.Category
 {
     public class CategoryDTO
     {
