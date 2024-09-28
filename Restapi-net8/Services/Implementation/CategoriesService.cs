@@ -1,37 +1,31 @@
-﻿using Restapi_net8.Model.Domain;
-using Restapi_net8.Model.DTO;
+﻿using AutoMapper;
+using Restapi_net8.Model.Domain;
+using Restapi_net8.Model.DTO.Category;
 using Restapi_net8.Repository.Interface;
 using Restapi_net8.Services.Interface;
+using System.Text.Json;
 
 namespace Restapi_net8.Services.Implementation
 {
     public class CategoriesService : ICategoryService
     {
         private readonly ICategoryRepository categoryRepository;
-        public CategoriesService(ICategoryRepository categoryRepository) { 
+        private readonly IMapper _mapper;
+        public CategoriesService(ICategoryRepository categoryRepository, IMapper mapper) { 
             this.categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
         public async Task<CategoryDTO> CreateCategory(Category category)
         {
             var categoryCreated = await categoryRepository.CreateAsync(category);
-            return new CategoryDTO
-            {
-                Id = categoryCreated.Id,
-                Name = categoryCreated.Name,
-                UrlHandle = categoryCreated.UrlHandle
-            };
+            return _mapper.Map<CategoryDTO>(categoryCreated);
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetAllCategory()
         {
-            var categories = await categoryRepository.GetAllCategory();
-            return categories.Select(category => new CategoryDTO
-            {
-                Id = category.Id,
-                Name = category.Name,
-                UrlHandle = category.UrlHandle
-            });
+            var categories = await categoryRepository.GetAll();
+            return _mapper.Map<IEnumerable<CategoryDTO>>(categories);
         }
         public async Task<CategoryDTO> GetCategoryById(Guid id)
         {
@@ -40,12 +34,7 @@ namespace Restapi_net8.Services.Implementation
             {
                 return null;
             }
-            return new CategoryDTO
-            {
-                Id = category.Id,
-                Name = category.Name,
-                UrlHandle = category.UrlHandle
-            };
+            return _mapper.Map<CategoryDTO>(category);
         }
         public async Task<CategoryDTO> UpdateCategory(Category category, Guid id)
         {
@@ -55,12 +44,7 @@ namespace Restapi_net8.Services.Implementation
                 throw new Exception("Category not found");
             }
             var categoryUpdated = await categoryRepository.UpdateAsync(categoryToUpdate.Id, category);
-            return new CategoryDTO
-            {
-                Id = categoryUpdated.Id,
-                Name = categoryUpdated.Name,
-                UrlHandle = categoryUpdated.UrlHandle
-            };
+            return _mapper.Map<CategoryDTO>(categoryUpdated);
         }
         public async Task<CategoryDTO> DeleteCategory(Guid id)
         {
@@ -70,12 +54,7 @@ namespace Restapi_net8.Services.Implementation
                 throw new Exception("Category not found");
             }
             var categoryDeleted = await categoryRepository.DeleteAsync(id);
-            return new CategoryDTO
-            {
-                Id = categoryDeleted.Id,
-                Name = categoryDeleted.Name,
-                UrlHandle = categoryDeleted.UrlHandle
-            };
+            return _mapper.Map<CategoryDTO>(categoryDeleted);
         }
     }
 }

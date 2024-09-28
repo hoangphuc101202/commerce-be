@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restapi_net8.Data;
 using Restapi_net8.Model.Domain;
-using Restapi_net8.Model.DTO;
+using Restapi_net8.Model.DTO.Category;
 using Restapi_net8.Repository.Interface;
 using Restapi_net8.Services.Interface;
 using System.Text.Json;
@@ -14,19 +15,21 @@ namespace Restapi_net8.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, IMapper mapper)
         {
             this.categoryService = categoryService;
+            _mapper = mapper;
         }
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody]CreateCategoryRequestDTO request)
         {
-            var category = new Category
+            if(!ModelState.IsValid)
             {
-                Name = request.Name,
-                UrlHandle = request.UrlHandle
-            };
+                return BadRequest(ModelState);
+            }
+            var category = _mapper.Map<Category>(request);
             var categoryCreated = await categoryService.CreateCategory(category);
             return Ok(categoryCreated);
         }

@@ -13,7 +13,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CodePulseCollectionString"));
 });
 builder.Services.AddRepositories();
-builder.Services.AddServices(); 
+builder.Services.AddServices();
+builder.Services.AddAutoMapper();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

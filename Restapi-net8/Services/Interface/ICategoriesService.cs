@@ -1,5 +1,5 @@
 ﻿using Restapi_net8.Model.Domain;
-using Restapi_net8.Model.DTO;
+using Restapi_net8.Model.DTO.Category;
 
 namespace Restapi_net8.Services.Interface
 {
