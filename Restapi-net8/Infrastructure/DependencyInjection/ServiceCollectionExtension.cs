@@ -1,4 +1,5 @@
 ﻿using Restapi_net8.Infrastructure.Mapping;
+using Restapi_net8.Middlewares;
 using Restapi_net8.Repository.Implementation;
 using Restapi_net8.Repository.Interface;
 using Restapi_net8.Services.Implementation;
@@ -20,5 +21,9 @@ namespace Restapi_net8.Infrastructure.DependencyInjection
         {
             services.AddAutoMapper(typeof(MappingProfile));
         }
+        public static void AddMiddlewares(this IServiceCollection services)
+        {
+            services.AddScoped<HttpExceptionHandlingMiddleware>();
+        } 
     }
 }

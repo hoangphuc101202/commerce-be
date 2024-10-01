@@ -1,8 +1,7 @@
 ﻿namespace Restapi_net8.Model.Domain
 {
-    public class BlogPost
+    public class BlogPost : BaseDomain
     {
-        public Guid Id { get; set; }
         public string Title { get; set; }
         public string ShortDescription { get; set; }
         public string Content { get; set; }
