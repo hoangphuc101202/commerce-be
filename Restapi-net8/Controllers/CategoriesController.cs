@@ -44,10 +44,6 @@ namespace Restapi_net8.Controllers
         public async Task<IActionResult> GetCategoryById([FromRoute]Guid id)
         {
             var category = await categoryService.GetCategoryById(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             return Ok(category);
         }
         [HttpPut]

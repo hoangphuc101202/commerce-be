@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restapi_net8.Data;
+using Restapi_net8.Model.Domain;
 using Restapi_net8.Repository.Interface;
 
 namespace Restapi_net8.Repository.Implementation
 {
-    public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+    public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseDomain
     {
         protected readonly ApplicationDBContext _dbContext;
         protected BaseRepository(ApplicationDBContext dbContext)
@@ -32,26 +33,15 @@ namespace Restapi_net8.Repository.Implementation
 
         public async Task<IEnumerable<TEntity>> GetAll()
         {
-            return await _dbContext.Set<TEntity>().Where(x => (bool)x.GetType().GetProperty("IsDeleted").GetValue(x) == false).ToListAsync();
+            return await _dbContext.Set<TEntity>().Where(entity => !entity.IsDeleted).ToListAsync();
         }
         public async Task<TEntity> GetById(Guid id)
         {
-            return await _dbContext.Set<TEntity>().FindAsync(id);
+            return await _dbContext.Set<TEntity>()
+                          .Where(entity => !entity.IsDeleted && entity.Id == id)
+                          .FirstOrDefaultAsync();
         }
-        public async Task<TEntity> UpdateAsync(Guid id, TEntity entity)
-        {
-            var entityToUpdate = await _dbContext.Set<TEntity>().FindAsync(id);
 
-            if (entityToUpdate == null)
-            {
-                throw new Exception($"{typeof(TEntity).Name} not found");
-            }
-            _dbContext.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-
-            await _dbContext.SaveChangesAsync();
-
-            return entityToUpdate;
-        }
         public async Task<TEntity> SoftDelete(Guid id)
         {
             var entityToDelete = await _dbContext.Set<TEntity>().FindAsync(id);
@@ -69,5 +59,21 @@ namespace Restapi_net8.Repository.Implementation
             }
             throw new Exception("Entity does not have IsDeleted property");
         }
+
+        public async Task<TEntity> UpdateAsync(Guid id, TEntity entity)
+        {
+            var entityToUpdate = await _dbContext.Set<TEntity>().FindAsync(id);
+
+            if (entityToUpdate == null)
+            {
+                throw new Exception($"{typeof(TEntity).Name} not found");
+            }
+            _dbContext.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+
+            await _dbContext.SaveChangesAsync();
+
+            return entityToUpdate;
+        }
+       
     }
 }

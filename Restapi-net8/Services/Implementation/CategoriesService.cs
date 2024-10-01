@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restapi_net8.Exceptions.Http;
 using Restapi_net8.Model.Domain;
 using Restapi_net8.Model.DTO.Category;
 using Restapi_net8.Repository.Interface;
@@ -32,7 +33,7 @@ namespace Restapi_net8.Services.Implementation
             var category = await categoryRepository.GetById(id);
             if (category == null)
             {
-                return null;
+                throw new NotFoundHttpException($"Category with id {id} not found");
             }
             return _mapper.Map<CategoryDTO>(category);
         }
@@ -41,7 +42,7 @@ namespace Restapi_net8.Services.Implementation
             var categoryToUpdate = await categoryRepository.GetById(id);
             if (categoryToUpdate == null)
             {
-                throw new Exception("Category not found");
+                throw new NotFoundHttpException($"Category with id {id} not found");
             }
             var categoryUpdated = await categoryRepository.UpdateAsync(categoryToUpdate.Id, category);
             return _mapper.Map<CategoryDTO>(categoryUpdated);
@@ -51,9 +52,9 @@ namespace Restapi_net8.Services.Implementation
             var categoryToDelete = await categoryRepository.GetById(id);
             if (categoryToDelete == null)
             {
-                throw new Exception("Category not found");
+                throw new NotFoundHttpException("Category not found");
             }
-            var categoryDeleted = await categoryRepository.DeleteAsync(id);
+            var categoryDeleted = await categoryRepository.SoftDelete(id);
             return _mapper.Map<CategoryDTO>(categoryDeleted);
         }
     }
