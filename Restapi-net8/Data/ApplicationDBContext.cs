@@ -9,10 +9,15 @@ namespace Restapi_net8.Data
         public ApplicationDBContext(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
-        public DbSet<Users> Users { get; set; }
+
     }
 }
