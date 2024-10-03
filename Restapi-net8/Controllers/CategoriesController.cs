@@ -54,7 +54,7 @@ namespace Restapi_net8.Controllers
             {
                 Id = id,
                 Name = request.Name,
-                UrlHandle = request.UrlHandle
+                ImageUrl = request.UrlHandle,
             };
             var categoryUpdate = await categoryService.UpdateCategory(category, id);
             return Ok(categoryUpdate);

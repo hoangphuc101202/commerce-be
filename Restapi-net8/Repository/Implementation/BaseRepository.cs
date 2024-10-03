@@ -49,7 +49,7 @@ namespace Restapi_net8.Repository.Implementation
             {
                 throw new Exception($"{typeof(TEntity).Name} not found");
             }
-            var property = entityToDelete.GetType().GetProperty("IsDeleted");
+            var property = entityToDelete.GetType().GetProperty("is_deleted");
             if (property != null)
             {
                 property.SetValue(entityToDelete, true);
@@ -57,7 +57,7 @@ namespace Restapi_net8.Repository.Implementation
                 await _dbContext.SaveChangesAsync();
                 return entityToDelete;
             }
-            throw new Exception("Entity does not have IsDeleted property");
+            throw new Exception("Entity does not have is_deleted property");
         }
 
         public async Task<TEntity> UpdateAsync(Guid id, TEntity entity)
