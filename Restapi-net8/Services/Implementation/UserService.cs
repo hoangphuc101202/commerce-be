@@ -58,6 +58,7 @@ namespace Restapi_net8.Services.Implementation
             customer.IsActive = true;
             customer.Role = "Customer";
             customer.Gender = request.gender;
+            customer.ImageUrl = request.url;
             await _usersRepository.CreateAsync(customer);
             Log.Debug("User {0} created successfully", customer.Email);
             return new ApiResponse(200, "User created successfully", null, null);
