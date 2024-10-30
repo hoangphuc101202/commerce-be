@@ -19,5 +19,7 @@ namespace Restapi_net8.Model.DTO.Users
         [Required(ErrorMessage = "Gender is Required")]
         [MaxLength(6, ErrorMessage = "Gender can't be longer than 6 characters")]
         public string gender { get; set; }
+
+        public string url { get; set; }
     }
 }
