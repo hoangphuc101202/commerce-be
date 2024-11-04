@@ -124,7 +124,18 @@ namespace Restapi_net8.Services.Implementation
             return new ApiResponse(200, "Generate New Refresh Token successful", token, null);
 
         }
-        
 
+        public async Task<ApiResponse> UserInfoService(string userId)
+        {
+            var userExist = await _usersRepository.GetById(Guid.Parse(userId));
+            if (userExist == null)
+            {
+                throw new BadRequestHttpException("User not found");
+            }
+            var user = _mapper.Map<UserInfo>(userExist);
+            Log.Debug("Get user info successful {0}", JsonConvert
+                .SerializeObject(user));
+            return new ApiResponse(200, "Get user info successful", user, null);
+        }
     }
 }

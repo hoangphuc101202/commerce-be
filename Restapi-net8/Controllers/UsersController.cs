@@ -55,5 +55,13 @@ namespace Restapi_net8.Controllers
             var refreshToken = await userService.RefreshTokenService(request, userId);
             return Ok(refreshToken);
         }
+        [Authorize]
+        [HttpGet("user-info")]
+        public async Task<IActionResult> UserInfo()
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userInfo = await userService.UserInfoService(userId);
+            return Ok(userInfo);
+        }
     }
 }
