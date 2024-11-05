@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Restapi_net8.Exceptions.Http;
+using Restapi_net8.Middlewares;
 using Restapi_net8.Model.Domain;
 using Restapi_net8.Model.DTO.Category;
 using Restapi_net8.Repository.Interface;
 using Restapi_net8.Services.Interface;
+using Serilog;
 using System.Text.Json;
 
 namespace Restapi_net8.Services.Implementation
@@ -17,10 +19,11 @@ namespace Restapi_net8.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<CategoryDTO> CreateCategory(Category category)
+        public async Task<ApiResponse> CreateCategory(Category category)
         {
             var categoryCreated = await categoryRepository.CreateAsync(category);
-            return _mapper.Map<CategoryDTO>(categoryCreated);
+            return new ApiResponse(200, "category successful", null, null);
+
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetAllCategory()

@@ -11,7 +11,13 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddCors(option => {
+    option.AddPolicy("AllowAll", policy => {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
@@ -55,6 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowAll");
 app.UseMiddleware<HttpExceptionHandlingMiddleware>();
 app.UseMiddleware<UnauthorizeMiddleware>();
 app.UseHttpsRedirection();

@@ -12,6 +12,7 @@ namespace Restapi_net8.Model.DTO.Users
         public string lastname { get; set; }
         [Required(ErrorMessage = "Email is Required")]
         [MaxLength(50, ErrorMessage = "Email can't be longer than 50 characters")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string email { get; set; }
         [Required(ErrorMessage = "Password is Required")]
         [MaxLength(20, ErrorMessage = "Password can't be longer than 20 characters")]
