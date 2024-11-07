@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restapi_net8.Data;
@@ -22,9 +23,10 @@ namespace Restapi_net8.Controllers
             this.categoryService = categoryService;
             _mapper = mapper;
         }
+        [Authorize(Roles = "Admin,Employee")]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody]CreateCategoryRequestDTO request)
-        {
+        {  
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

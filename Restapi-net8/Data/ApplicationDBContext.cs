@@ -5,9 +5,11 @@ using System.Data;
 namespace Restapi_net8.Data
 {
     public class ApplicationDBContext : DbContext
-    {
-        public ApplicationDBContext(DbContextOptions options) : base(options)
+    {   
+        private readonly IConfiguration configuration;
+        public ApplicationDBContext(DbContextOptions options, IConfiguration configuration) : base(options)
         {
+            this.configuration = configuration;
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -17,7 +19,20 @@ namespace Restapi_net8.Data
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Customer> Customers { get; set; }
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Customer>().HasData(
+                new Customer{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4395"),
+                    FullName = "Admin",
+                    Email = "admin@gmail.com",
+                    Password = configuration["AppSettings:PasswordAdmin"],
+                    Gender = "male",
+                    Role = "Admin",
+                }
+            );
+        }
 
     }
 }
