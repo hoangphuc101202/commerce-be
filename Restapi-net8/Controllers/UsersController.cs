@@ -20,7 +20,7 @@ namespace Restapi_net8.Controllers
             _mapper = mapper;
             this.userService = userService;
         }
-
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] CreateUsers request)
         {
@@ -32,6 +32,7 @@ namespace Restapi_net8.Controllers
             return Ok(userCreate);
 
         }
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginUser request)
         {
