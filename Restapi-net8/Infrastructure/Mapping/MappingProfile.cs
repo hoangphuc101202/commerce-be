@@ -13,6 +13,7 @@ namespace Restapi_net8.Infrastructure.Mapping
             CreateMap<CreateCategoryRequestDTO, Category>();
             CreateMap<UpdateCategoryDTO, Category>();
             CreateMap<CreateUsers, Customer>();
+            CreateMap<Customer, UserInfo>();
         }
     }
 }
