@@ -27,7 +27,7 @@ namespace Restapi_net8.Data
                     Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4395"),
                     FullName = "Admin",
                     Email = "admin@gmail.com",
-                    Password = configuration["AppSettings:PasswordAdmin"]  ?? "Admin@123",
+                    Password = configuration["AppSettings:PasswordAdmin"],
                     Gender = "male",
                     Role = "Admin",
                 }
