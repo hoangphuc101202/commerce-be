@@ -22,7 +22,7 @@ namespace Restapi_net8.Services.Implementation
         public async Task<ApiResponse> CreateCategory(Category category)
         {
             var categoryCreated = await categoryRepository.CreateAsync(category);
-            return new ApiResponse(200, "category successful", null, null);
+            return new ApiResponse(200, "category created successful", null, null);
 
         }
 

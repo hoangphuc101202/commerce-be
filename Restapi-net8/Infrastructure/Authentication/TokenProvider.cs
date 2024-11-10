@@ -22,7 +22,7 @@ namespace Restapi_net8.Infrastructure.Authentication
                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
                    new Claim(JwtRegisteredClaimNames.Sub, user.IdUser),
                    new Claim("FullName", user.FullName.ToString()),
-                   new Claim("Role", user.Role.ToString())
+                   new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(configuration.GetValue<int>("AppSettings:TokenExpiry")),
                 SigningCredentials = credentials,
@@ -34,7 +34,7 @@ namespace Restapi_net8.Infrastructure.Authentication
                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
                    new Claim(JwtRegisteredClaimNames.Sub, user.IdUser),
                    new Claim("FullName", user.FullName.ToString()),
-                   new Claim("Role", user.Role.ToString())
+                   new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("AppSettings:TokenExpiryInDays")),
                 SigningCredentials = credentialsPublic,
