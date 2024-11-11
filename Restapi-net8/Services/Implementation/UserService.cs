@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -96,28 +97,29 @@ namespace Restapi_net8.Services.Implementation
             return new ApiResponse(200, "Login successful", token, null);
         }
 
-        public async Task<ApiResponse> RefreshTokenService(RefreshToken request, string userId)
+        public async Task<ApiResponse> RefreshTokenService(RefreshToken request)
         {
             var refreshToken = request.refreshToken;
-            var refreshTokenExist = await  _distributedCache.GetStringAsync(userId);
-            if (!refreshToken.Equals(refreshTokenExist, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new BadRequestHttpException("Invalid refresh token");
-            }
             var payload = DecodeJwtToken(refreshToken);
             var userPayload = new PayloadUsers 
             {
                 IdUser = payload.ContainsKey("sub") ? payload["sub"].ToString() : null,
                 Email = payload.ContainsKey("email") ? payload["email"].ToString() : null,
                 FullName = payload.ContainsKey("FullName") ? payload["FullName"].ToString() : null,
-                Role = payload.ContainsKey("Role") ? payload["Role"].ToString() : null
+                Role = payload.ContainsKey(ClaimTypes.Role) ? payload[ClaimTypes.Role].ToString(): null
             };
+            var refreshTokenExist = await  _distributedCache.GetStringAsync(userPayload.IdUser);
+            if (!refreshToken.Equals(refreshTokenExist, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new BadRequestHttpException("Invalid refresh token");
+            }
+            
             var (accessToken, newRefreshToken) = _tokenProvider.GenerateJsonWebToken(userPayload);
             var cacheEntryOptions = new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
             };
-            await _distributedCache.SetStringAsync(userId, newRefreshToken, cacheEntryOptions);
+            await _distributedCache.SetStringAsync(userPayload.IdUser, newRefreshToken, cacheEntryOptions);
             var token = new {
                 AccessToken = accessToken,
                 RefreshToken = newRefreshToken

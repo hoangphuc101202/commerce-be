@@ -9,7 +9,7 @@ namespace Restapi_net8.Services.Interface
         Task<ApiResponse> CreateUserService(CreateUsers request);
         Task<ApiResponse> LoginUserService(LoginUser request);
 
-        Task<ApiResponse> RefreshTokenService(RefreshToken request, string userId);
+        Task<ApiResponse> RefreshTokenService(RefreshToken request);
         Task<ApiResponse> UserInfoService(string userId);
     }
 }

@@ -44,16 +44,14 @@ namespace Restapi_net8.Controllers
             return Ok(userLogin);
         }
 
-        [Authorize]
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshToken request)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var refreshToken = await userService.RefreshTokenService(request, userId);
+            var refreshToken = await userService.RefreshTokenService(request);
             return Ok(refreshToken);
         }
         [Authorize]
