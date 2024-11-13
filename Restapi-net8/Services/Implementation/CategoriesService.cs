@@ -40,16 +40,16 @@ namespace Restapi_net8.Services.Implementation
             }
             return _mapper.Map<CategoryDTO>(category);
         }
-        public async Task<CategoryDTO> UpdateCategory(Category category, Guid id)
-        {
-            var categoryToUpdate = await categoryRepository.GetById(id);
-            if (categoryToUpdate == null)
-            {
-                throw new NotFoundHttpException($"Category with id {id} not found");
-            }
-            var categoryUpdated = await categoryRepository.UpdateAsync(categoryToUpdate.Id, category);
-            return _mapper.Map<CategoryDTO>(categoryUpdated);
-        }
+        // public async Task<CategoryDTO> UpdateCategory(Category category, Guid id)
+        // {
+        //     var categoryToUpdate = await categoryRepository.GetById(id);
+        //     if (categoryToUpdate == null)
+        //     {
+        //         throw new NotFoundHttpException($"Category with id {id} not found");
+        //     }
+        //     var categoryUpdated = await categoryRepository.UpdateAsync(categoryToUpdate.Id, category);
+        //     return _mapper.Map<CategoryDTO>(categoryUpdated);
+        // }
         public async Task<CategoryDTO> DeleteCategory(Guid id)
         {
             var categoryToDelete = await categoryRepository.GetById(id);

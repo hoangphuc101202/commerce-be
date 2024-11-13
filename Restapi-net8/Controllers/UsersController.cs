@@ -62,5 +62,26 @@ namespace Restapi_net8.Controllers
             var userInfo = await userService.UserInfoService(userId);
             return Ok(userInfo);
         }
+        [Authorize]
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var logout = await userService.LogoutService(userId);
+            return Ok(logout);
+        }
+        [Authorize]
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUsers request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userUpdate = await userService.UpdateUserService(request, userId);
+            return Ok(userUpdate);
+        }
+
     }
 }
