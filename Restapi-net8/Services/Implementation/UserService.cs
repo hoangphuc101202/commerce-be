@@ -159,6 +159,7 @@ namespace Restapi_net8.Services.Implementation
             }
             var userUpdate = _mapper.Map<Customer>(request);
             userUpdate.Id = Guid.Parse(userId);
+            Log.Debug("Update user {0}", JsonConvert.SerializeObject(userUpdate));
             var userUpdated = await _usersRepository.UpdateAsync(userExist,userUpdate);
             return new ApiResponse(200, "Update user successful", null, null);
         }
