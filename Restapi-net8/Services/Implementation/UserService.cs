@@ -140,5 +140,28 @@ namespace Restapi_net8.Services.Implementation
                 .SerializeObject(user));
             return new ApiResponse(200, "Get user info successful", user, null);
         }
+        public async Task<ApiResponse> LogoutService(string userId)
+        {
+            var refreshTokenExist = await _distributedCache.GetStringAsync(userId);
+            if (refreshTokenExist == null)
+            {
+                throw new BadRequestHttpException("User not found");
+            }
+            await _distributedCache.RemoveAsync(userId);
+            return new ApiResponse(200, "Logout successful", null, null);
+        }
+        public async Task<ApiResponse> UpdateUserService(UpdateUsers request, string userId)
+        {
+            var userExist = await _usersRepository.GetById(Guid.Parse(userId));
+            if (userExist == null)
+            {
+                throw new BadRequestHttpException("User not found");
+            }
+            var userUpdate = _mapper.Map<Customer>(request);
+            userUpdate.Id = Guid.Parse(userId);
+            var userUpdated = await _usersRepository.UpdateAsync(userExist,userUpdate);
+            return new ApiResponse(200, "Update user successful", null, null);
+        }
+        
     }
 }

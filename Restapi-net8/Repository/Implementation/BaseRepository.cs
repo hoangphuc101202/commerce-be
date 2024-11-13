@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Restapi_net8.Data;
 using Restapi_net8.Model.Domain;
 using Restapi_net8.Repository.Interface;
+using Serilog;
 
 namespace Restapi_net8.Repository.Implementation
 {
@@ -60,19 +62,27 @@ namespace Restapi_net8.Repository.Implementation
             throw new Exception("Entity does not have is_deleted property");
         }
 
-        public async Task<TEntity> UpdateAsync(Guid id, TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entityToUpdate,TEntity entity)
         {
-            var entityToUpdate = await _dbContext.Set<TEntity>().FindAsync(id);
-
-            if (entityToUpdate == null)
+             foreach (var property in typeof(TEntity).GetProperties())
             {
-                throw new Exception($"{typeof(TEntity).Name} not found");
+                if (property.Name == "Id")
+                {
+                    continue;
+                }
+
+                var newValue = property.GetValue(entity);
+                var currentValue = property.GetValue(entityToUpdate);
+                if (newValue != null && !newValue.Equals(currentValue))
+                {
+                    property.SetValue(entityToUpdate, newValue);
+                    _dbContext.Entry(entityToUpdate).Property(property.Name).IsModified = true;
+                }
             }
-            _dbContext.Entry(entityToUpdate).CurrentValues.SetValues(entity);
 
             await _dbContext.SaveChangesAsync();
 
-            return entityToUpdate;
+            return entity;
         }
        
     }

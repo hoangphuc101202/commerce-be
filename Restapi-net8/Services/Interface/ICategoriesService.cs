@@ -9,7 +9,7 @@ namespace Restapi_net8.Services.Interface
         Task<IEnumerable<CategoryDTO>> GetAllCategory();
         Task<ApiResponse> CreateCategory(Category category);
         Task<CategoryDTO> GetCategoryById(Guid id);
-        Task <CategoryDTO> UpdateCategory(Category category, Guid id);
+        // Task <CategoryDTO> UpdateCategory(Category category, Guid id);
         Task<CategoryDTO> DeleteCategory(Guid id);
     }
 }

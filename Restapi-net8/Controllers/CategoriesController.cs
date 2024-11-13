@@ -48,19 +48,19 @@ namespace Restapi_net8.Controllers
             var category = await categoryService.GetCategoryById(id);
             return Ok(category);
         }
-        [HttpPut]
-        [Route("{id:Guid}")]
-        public async Task<IActionResult> UpdateCategoryById([FromRoute] Guid id, [FromBody] UpdateCategoryDTO request)
-        {
-            var category = new Category
-            {
-                Id = id,
-                Name = request.Name,
-                ImageUrl = request.UrlHandle,
-            };
-            var categoryUpdate = await categoryService.UpdateCategory(category, id);
-            return Ok(categoryUpdate);
-        }
+        // [HttpPut]
+        // [Route("{id:Guid}")]
+        // public async Task<IActionResult> UpdateCategoryById([FromRoute] Guid id, [FromBody] UpdateCategoryDTO request)
+        // {
+        //     var category = new Category
+        //     {
+        //         Id = id,
+        //         Name = request.Name,
+        //         ImageUrl = request.UrlHandle,
+        //     };
+        //     var categoryUpdate = await categoryService.UpdateCategory(category, id);
+        //     return Ok(categoryUpdate);
+        // }
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteCategoryById([FromRoute] Guid id)
