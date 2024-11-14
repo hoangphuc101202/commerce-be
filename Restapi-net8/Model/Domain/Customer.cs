@@ -5,7 +5,7 @@ namespace Restapi_net8.Model.Domain
     [Table("customer")]
     public class Customer : BaseDomain
     {
-        [Column("full_name", TypeName = "varchar(100)")]
+        [Column("full_name", TypeName = "nvarchar(100)")]
         public string FullName { get; set; }
 
         [Column("gender", TypeName = "varchar(50)")]
@@ -17,7 +17,7 @@ namespace Restapi_net8.Model.Domain
         [Column("birth_of_date", TypeName = "datetime2")]
         public DateTime? BirthOfDate { get; set; }
 
-        [Column("address", TypeName = "varchar(200)")]
+        [Column("address", TypeName = "nvarchar(200)")]
         public string? Address { get; set; }
 
         [Column("phone", TypeName = "varchar(11)")]

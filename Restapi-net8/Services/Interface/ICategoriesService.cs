@@ -6,10 +6,10 @@ namespace Restapi_net8.Services.Interface
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<CategoryDTO>> GetAllCategory();
+        Task<ApiResponse> GetAllCategory();
         Task<ApiResponse> CreateCategory(Category category);
-        Task<CategoryDTO> GetCategoryById(Guid id);
-        // Task <CategoryDTO> UpdateCategory(Category category, Guid id);
-        Task<CategoryDTO> DeleteCategory(Guid id);
+        Task<ApiResponse> GetCategoryById(Guid id);
+        Task <ApiResponse> UpdateCategory(UpdateCategoryDTO updateCategoryDTO, Guid id);
+        Task<ApiResponse> DeleteCategory(Guid id);
     }
 }

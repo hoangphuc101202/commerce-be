@@ -51,7 +51,7 @@ namespace Restapi_net8.Repository.Implementation
             {
                 throw new Exception($"{typeof(TEntity).Name} not found");
             }
-            var property = entityToDelete.GetType().GetProperty("is_deleted");
+            var property = entityToDelete.GetType().GetProperty("IsDeleted");
             if (property != null)
             {
                 property.SetValue(entityToDelete, true);

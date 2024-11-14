@@ -9,7 +9,6 @@ namespace Restapi_net8.Infrastructure.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Category, CategoryDTO>();
             CreateMap<CreateCategoryRequestDTO, Category>();
             CreateMap<UpdateCategoryDTO, Category>();
             CreateMap<CreateUsers, Customer>();
