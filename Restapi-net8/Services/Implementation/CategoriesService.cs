@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using Restapi_net8.Exceptions.Http;
 using Restapi_net8.Middlewares;
 using Restapi_net8.Model.Domain;
@@ -26,31 +27,50 @@ namespace Restapi_net8.Services.Implementation
 
         }
 
-        public async Task<IEnumerable<CategoryDTO>> GetAllCategory()
+        public async Task<ApiResponse> GetAllCategory()
         {
             var categories = await categoryRepository.GetAll();
-            return _mapper.Map<IEnumerable<CategoryDTO>>(categories);
+            var categoriesHandle = categories.Select(c => new CategoryDTO
+            {
+                Id = c.Id,
+                name = c.Name,
+                categoryAliasName = c.CategoryAliasName,
+                description = c.Description,
+                imageUrl = c.ImageUrl
+            }).ToList();
+            return new ApiResponse(200, "categories retrieved successful", categoriesHandle, null);
         }
-        public async Task<CategoryDTO> GetCategoryById(Guid id)
+        public async Task<ApiResponse> GetCategoryById(Guid id)
         {
             var category = await categoryRepository.GetById(id);
             if (category == null)
             {
                 throw new NotFoundHttpException($"Category with id {id} not found");
             }
-            return _mapper.Map<CategoryDTO>(category);
+            var categoryHandle = new CategoryDTO
+            {
+                Id = category.Id,
+                name = category.Name,
+                categoryAliasName = category.CategoryAliasName,
+                description = category.Description,
+                imageUrl = category.ImageUrl
+            };
+            return new ApiResponse(200, "category retrieved successful", categoryHandle, null);
         }
-        // public async Task<CategoryDTO> UpdateCategory(Category category, Guid id)
-        // {
-        //     var categoryToUpdate = await categoryRepository.GetById(id);
-        //     if (categoryToUpdate == null)
-        //     {
-        //         throw new NotFoundHttpException($"Category with id {id} not found");
-        //     }
-        //     var categoryUpdated = await categoryRepository.UpdateAsync(categoryToUpdate.Id, category);
-        //     return _mapper.Map<CategoryDTO>(categoryUpdated);
-        // }
-        public async Task<CategoryDTO> DeleteCategory(Guid id)
+        public async Task<ApiResponse> UpdateCategory(UpdateCategoryDTO updateCategory, Guid id)
+        {
+            var categoryToUpdate = await categoryRepository.GetById(id);
+            if (categoryToUpdate == null)
+            {
+                throw new NotFoundHttpException($"Category with id {id} not found");
+            }
+            var categoryUpdated = _mapper.Map<Category>(updateCategory);
+            categoryUpdated.Id = id;
+            await categoryRepository.UpdateAsync(categoryToUpdate,categoryUpdated);
+            Log.Debug("Category {0} updated successfully", JsonConvert.SerializeObject(categoryUpdated));
+            return new ApiResponse(200, "category updated successful", null, null);
+        }
+        public async Task<ApiResponse> DeleteCategory(Guid id)
         {
             var categoryToDelete = await categoryRepository.GetById(id);
             if (categoryToDelete == null)
@@ -58,7 +78,7 @@ namespace Restapi_net8.Services.Implementation
                 throw new NotFoundHttpException("Category not found");
             }
             var categoryDeleted = await categoryRepository.SoftDelete(id);
-            return _mapper.Map<CategoryDTO>(categoryDeleted);
+            return new ApiResponse(200, "category deleted successful", null, null);
         }
     }
 }

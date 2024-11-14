@@ -3,7 +3,10 @@
     public class CategoryDTO
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string UrlHandle { get; set; }
+        public string name { get; set; }
+        public string categoryAliasName { get; set; }
+        public string description { get; set; }
+        public string imageUrl { get; set; }
+
     }
 }

@@ -5,10 +5,10 @@ namespace Restapi_net8.Model.Domain
 
     public class Product : BaseDomain
     {
-        [Column("name", TypeName = "varchar(200)")]
+        [Column("name", TypeName = "nvarchar(200)")]
         public string Name { get; set; }
 
-        [Column("product_name_alias", TypeName = "varchar(200)")]
+        [Column("product_name_alias", TypeName = "nvarchar(200)")]
         public string? ProductNameAlias { get; set; }
 
         [ForeignKey("Category")]
@@ -29,7 +29,7 @@ namespace Restapi_net8.Model.Domain
         [Column("views", TypeName = "bigint")]
         public long Views { get; set;  }
 
-        [Column("description", TypeName = "varchar(300)")]
+        [Column("description", TypeName = "nvarchar(300)")]
         public string? Description { get; set; }
 
         [ForeignKey("Supplier")]
