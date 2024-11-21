@@ -15,11 +15,13 @@ namespace Restapi_net8.Infrastructure.DependencyInjection
         {
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ICategoryService, CategoriesService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductsService, ProductsService>();
         }
         public static void AddAutoMapper(this IServiceCollection services)
         {

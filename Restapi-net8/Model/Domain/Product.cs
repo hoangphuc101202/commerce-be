@@ -2,7 +2,7 @@
 
 namespace Restapi_net8.Model.Domain
 {
-
+    [Table("product")]
     public class Product : BaseDomain
     {
         [Column("name", TypeName = "nvarchar(200)")]
@@ -12,10 +12,10 @@ namespace Restapi_net8.Model.Domain
         public string? ProductNameAlias { get; set; }
 
         [ForeignKey("Category")]
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
 
         [Column("price", TypeName = "decimal(18,2)")]
-        public float Price { get; set; }
+        public float? Price { get; set; }
 
         [Column("image_url", TypeName = "varchar(max)")]
         public string? ImageUrl { get; set; }
@@ -27,12 +27,12 @@ namespace Restapi_net8.Model.Domain
         public float? Discount { get; set; }
 
         [Column("views", TypeName = "bigint")]
-        public long Views { get; set;  }
+        public long? Views { get; set;  }
 
         [Column("description", TypeName = "nvarchar(300)")]
         public string? Description { get; set; }
 
         [ForeignKey("Supplier")]
-        public Guid SupplierId { get; set; }
+        public Guid? SupplierId { get; set; }
     }
 }
