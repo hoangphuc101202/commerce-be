@@ -158,6 +158,7 @@ namespace Restapi_net8.Services.Implementation
                 throw new BadRequestHttpException("User not found");
             }
             var userUpdate = _mapper.Map<Customer>(request);
+            // userUpdate.BirthOfDate = DateTime.Parse(request.birthOfDate);
             userUpdate.Id = Guid.Parse(userId);
             Log.Debug("Update user {0}", JsonConvert.SerializeObject(userUpdate));
             var userUpdated = await _usersRepository.UpdateAsync(userExist,userUpdate);
