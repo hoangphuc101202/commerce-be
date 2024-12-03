@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Distributed;
@@ -22,13 +23,15 @@ namespace Restapi_net8.Services.Implementation
         private readonly TokenProvider _tokenProvider;
         private readonly IMapper _mapper;
         private readonly IDistributedCache _distributedCache;
-        public UserService(IUsersRepository usersRepository, PasswordHasher passwordHasher, IMapper mapper, TokenProvider tokenProvider, IDistributedCache distributedCache)    
+        private readonly MailService _mailService;
+        public UserService(IUsersRepository usersRepository, PasswordHasher passwordHasher, IMapper mapper, TokenProvider tokenProvider, IDistributedCache distributedCache, MailService mailService)
         {
             _usersRepository = usersRepository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _tokenProvider = tokenProvider;
             _distributedCache = distributedCache;
+            _mailService = mailService;
         }
         private IDictionary<string, object> DecodeJwtToken(string token)
         {
@@ -164,6 +167,60 @@ namespace Restapi_net8.Services.Implementation
             var userUpdated = await _usersRepository.UpdateAsync(userExist,userUpdate);
             return new ApiResponse(200, "Update user successful", null, null);
         }
-        
+        public async Task<ApiResponse> ForgotPasswordService(ForgotPassword request)
+        {
+            var email = request.email;
+            var userExist = await _usersRepository.GetEmailUser(email);
+            if (userExist == null)
+            {
+                throw new BadRequestHttpException("Email not found");
+            }
+            var tokenExist = await _distributedCache.GetStringAsync($"TokenForgetPassword:{email}");
+            if (tokenExist != null)
+            {
+                await _distributedCache.RemoveAsync($"TokenForgetPassword:{email}");
+            }
+            Guid g = Guid.NewGuid();
+            string GuidString = Convert.ToBase64String(g.ToByteArray());
+            GuidString = GuidString.Replace("=", "");
+            GuidString = GuidString.Replace("+", "");
+            var cacheEntryOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            };
+            await _distributedCache.SetStringAsync($"TokenForgetPassword:{email}", GuidString, cacheEntryOptions);
+            var mailResponse = await _mailService.SendMail(email, GuidString);
+            return new ApiResponse(200, mailResponse, null, null);
+        }
+
+        public async Task<ApiResponse> VerifyTokenService(VerifyToken request)
+        {
+            var token = request.token;
+            var email = request.email;
+            var tokenExist = await _distributedCache.GetStringAsync($"TokenForgetPassword:{email}");
+            if (tokenExist != token)
+            {
+                throw new BadRequestHttpException("Token is invalid");
+            }
+            return new ApiResponse(200, "Token is valid", null, null);
+        }
+        public async Task<ApiResponse> ResetPasswordService(ResetPassword request)
+        {
+            var email = request.email;
+            var password = request.password;
+            var userExist = await _usersRepository.GetEmailUser(email);
+            if (userExist == null)
+            {
+                throw new BadRequestHttpException("Email not found");
+            }
+            var hashedPassword = _passwordHasher.HashPassword(password);
+            userExist.Password = hashedPassword;
+            var userToUpdate = new Customer
+            {
+                Password = hashedPassword
+            };
+            await _usersRepository.UpdateAsync(userExist, userToUpdate);
+            return new ApiResponse(200, "Reset password successful", null, null);
+        }
     }
 }

@@ -13,5 +13,8 @@ namespace Restapi_net8.Services.Interface
         Task<ApiResponse> UserInfoService(string userId);
         Task<ApiResponse>LogoutService(string userId);
         Task<ApiResponse>UpdateUserService(UpdateUsers request, string userId);
+        Task<ApiResponse>ForgotPasswordService(ForgotPassword request);
+        Task<ApiResponse>VerifyTokenService(VerifyToken request);
+        Task<ApiResponse>ResetPasswordService(ResetPassword request);
     }
 }

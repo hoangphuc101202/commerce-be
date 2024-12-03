@@ -82,6 +82,35 @@ namespace Restapi_net8.Controllers
             var userUpdate = await userService.UpdateUserService(request, userId);
             return Ok(userUpdate);
         }
-
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPassword request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var forgotPassword = await userService.ForgotPasswordService(request);
+            return Ok(forgotPassword);
+        }
+        [HttpPost("verify-token")]
+        public async Task<IActionResult> VerifyToken([FromBody] VerifyToken request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var verifyToken = await userService.VerifyTokenService(request);
+            return Ok(verifyToken);
+        }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPassword request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var resetPassword = await userService.ResetPasswordService(request);
+            return Ok(resetPassword);
+        }
     }
 }
