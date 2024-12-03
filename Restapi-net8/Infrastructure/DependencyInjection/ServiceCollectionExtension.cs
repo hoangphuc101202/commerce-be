@@ -35,6 +35,7 @@ namespace Restapi_net8.Infrastructure.DependencyInjection
         {
             services.AddScoped<PasswordHasher>();
             services.AddSingleton<TokenProvider>();
+            services.AddScoped<MailService>();
         }
     }
 }

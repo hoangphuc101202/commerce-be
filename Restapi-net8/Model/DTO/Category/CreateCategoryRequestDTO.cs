@@ -13,6 +13,8 @@ namespace Restapi_net8.Model.DTO.Category
         public string? categoryAliasName { get; set; }
 
         [MaxLength(100, ErrorMessage = "Category Description can't be longer than 100 characters")]
+        [RegularExpression(@"^[\p{L}\p{N}\s]*$", ErrorMessage = "description must be alphanumeric. ")]
+
         public string? description { get; set; }
         [Required(ErrorMessage = "Url image is Required")]
         public string imageUrl { get; set; }

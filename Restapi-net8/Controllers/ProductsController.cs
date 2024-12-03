@@ -46,7 +46,6 @@ namespace Restapi_net8.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var product = _mapper.Map<Product>(request);
             var productUpdated = await productService.UpdateProduct(request, id);
             return Ok(productUpdated);
         }

@@ -89,6 +89,7 @@ public class ProductsService : IProductsService
     }
     public async Task<ApiResponse> UpdateProduct(UpdateProductRequestDTO product, Guid id)
     {
+        Log.Debug("Product id {0}", product);
         var productToUpdate = await productRepository.GetById(id);
         if(productToUpdate == null)
         {
