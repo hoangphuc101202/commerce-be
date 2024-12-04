@@ -208,10 +208,16 @@ namespace Restapi_net8.Services.Implementation
         {
             var email = request.email;
             var password = request.password;
+            var token  = request.token;
             var userExist = await _usersRepository.GetEmailUser(email);
             if (userExist == null)
             {
                 throw new BadRequestHttpException("Email not found");
+            }
+            var tokenExist = await _distributedCache.GetStringAsync($"TokenForgetPassword:{email}");
+            if (tokenExist != token)
+            {
+                throw new BadRequestHttpException("Token is invalid");
             }
             var hashedPassword = _passwordHasher.HashPassword(password);
             userExist.Password = hashedPassword;
@@ -220,7 +226,30 @@ namespace Restapi_net8.Services.Implementation
                 Password = hashedPassword
             };
             await _usersRepository.UpdateAsync(userExist, userToUpdate);
+            await _distributedCache.RemoveAsync($"TokenForgetPassword:{email}");
             return new ApiResponse(200, "Reset password successful", null, null);
+        }
+        public async Task<ApiResponse> ChangePasswordService(ChangePassword request, string userId)
+        {
+            var oldPassword = request.oldPassword;
+            var newPassword = request.newPassword;
+            var userExist = await _usersRepository.GetById(Guid.Parse(userId));
+            if (userExist == null)
+            {
+                throw new BadRequestHttpException("User not found");
+            }
+            if (!_passwordHasher.VerifyPassword(oldPassword, userExist.Password))
+            {
+                throw new BadRequestHttpException("Old password is incorrect");
+            }
+            var hashedPassword = _passwordHasher.HashPassword(newPassword);
+            userExist.Password = hashedPassword;
+            var userToUpdate = new Customer
+            {
+                Password = hashedPassword
+            };
+            await _usersRepository.UpdateAsync(userExist, userToUpdate);
+            return new ApiResponse(200, "Change password successful", null, null);
         }
     }
 }
