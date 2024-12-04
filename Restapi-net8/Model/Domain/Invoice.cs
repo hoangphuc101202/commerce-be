@@ -24,9 +24,11 @@ namespace Restapi_net8.Model.Domain
         public float? ShippingFee { get; set; }
 
         [ForeignKey("Customer")]
+        [Column("customer_id")]
         public Guid CustomerId { get; set; }
 
         [ForeignKey("Status")]
+        [Column("status_id")]
         public Guid StatusId { get; set; }
 
         [Column("note", TypeName = "varchar(300)")]

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restapi_net8.Data;
 
@@ -11,9 +12,11 @@ using Restapi_net8.Data;
 namespace Restapi_net8.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241204153629_RemoveDiscountInvoiceDetail")]
+    partial class RemoveDiscountInvoiceDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,8 +144,7 @@ namespace Restapi_net8.Migrations
                         .HasColumnName("cancle_date");
 
                     b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("customer_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeliveryDate")
                         .HasColumnType("datetime2")
@@ -169,8 +171,7 @@ namespace Restapi_net8.Migrations
                         .HasColumnName("shipping_fee");
 
                     b.Property<Guid>("StatusId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("status_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -188,8 +189,7 @@ namespace Restapi_net8.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("InvoiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("invoice_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
@@ -200,14 +200,15 @@ namespace Restapi_net8.Migrations
                         .HasColumnName("price");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("product_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
 
                     b.ToTable("invoice_detail");
                 });
@@ -292,26 +293,6 @@ namespace Restapi_net8.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("status");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4395"),
-                            IsDeleted = false,
-                            Name = "Chờ xác nhận"
-                        },
-                        new
-                        {
-                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4396"),
-                            IsDeleted = false,
-                            Name = "Đơn hàng đang giao"
-                        },
-                        new
-                        {
-                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4397"),
-                            IsDeleted = false,
-                            Name = "Đã giao hàng"
-                        });
                 });
 
             modelBuilder.Entity("Restapi_net8.Model.Domain.Supplier", b =>
@@ -367,6 +348,17 @@ namespace Restapi_net8.Migrations
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Restapi_net8.Model.Domain.InvoiceDetail", b =>
+                {
+                    b.HasOne("Restapi_net8.Model.Domain.Invoice", "Invoice")
+                        .WithMany()
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("Restapi_net8.Model.Domain.Product", b =>

@@ -31,6 +31,20 @@ namespace Restapi_net8.Data
                     Role = "Admin",
                 }
             );
+            modelBuilder.Entity<Status>().HasData(
+                new Status{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4395"),
+                    Name = "Chờ xác nhận",
+                },
+                new Status{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4396"),
+                    Name = "Đơn hàng đang giao",
+                },
+                new Status{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4397"),
+                    Name = "Đã giao hàng",
+                }
+            );
         }
 
     }
