@@ -29,9 +29,6 @@ namespace Restapi_net8.Model.Domain
         [ForeignKey("Status")]
         public Guid StatusId { get; set; }
 
-        [ForeignKey("Employee")]
-        public Guid EmployeeId { get; set; }
-
         [Column("note", TypeName = "varchar(300)")]
         public string? Note { get; set; }
 
