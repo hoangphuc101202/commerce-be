@@ -112,5 +112,17 @@ namespace Restapi_net8.Controllers
             var resetPassword = await userService.ResetPasswordService(request);
             return Ok(resetPassword);
         }
+        [Authorize]
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePassword request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var changePassword = await userService.ChangePasswordService(request, userId);
+            return Ok(changePassword);
+        }
     }
 }
