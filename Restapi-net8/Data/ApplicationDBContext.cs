@@ -12,7 +12,6 @@ namespace Restapi_net8.Data
             this.configuration = configuration;
         }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
         public DbSet<Product> Products { get; set; }
