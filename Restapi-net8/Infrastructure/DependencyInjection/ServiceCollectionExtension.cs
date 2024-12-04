@@ -22,6 +22,7 @@ namespace Restapi_net8.Infrastructure.DependencyInjection
             services.AddScoped<ICategoryService, CategoriesService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductsService, ProductsService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
         }
         public static void AddAutoMapper(this IServiceCollection services)
         {

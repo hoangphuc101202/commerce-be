@@ -6,13 +6,13 @@ namespace Restapi_net8.Model.Domain
     public class Invoice : BaseDomain
     {
         [Column("order_date", TypeName = "datetime2")]
-        public DateTime? OrderDate { get; set; }
+        public DateTime? OrderDate { get; set; } = DateTime.Now;
 
         [Column("delivery_date", TypeName = "datetime2")]
         public DateTime? DeliveryDate { get; set; }
 
-        [Column("cancle_date", TypeName = "datetime2")]
-        public DateTime? CancleDate { get; set; }
+        [Column("cancel_date", TypeName = "datetime2")]
+        public DateTime? CancelDate { get; set; }
 
         [Column("address", TypeName = "varchar(200)")]
         public string? Address { get; set; }

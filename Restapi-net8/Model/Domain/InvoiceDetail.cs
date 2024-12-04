@@ -8,6 +8,7 @@ namespace Restapi_net8.Model.Domain
         [ForeignKey("Invoice")]
         [Column("invoice_id")]
         public Guid InvoiceId { get; set; }
+        public Invoice Invoice { get; set; }
 
         [ForeignKey("Product")]  
         [Column("product_id")]       
