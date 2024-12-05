@@ -12,8 +12,6 @@ public class Payment : BaseDomain
     public double? Amount { get; set; }
     [Column("payment_method", TypeName = "varchar(200)")]
     public string? PaymentMethod { get; set; }
-    [Column("status", TypeName = "varchar(200)")]
-    public string? Status { get; set; }
     [Column("customer_id", TypeName = "uniqueidentifier")]
     public Guid? CustomerId { get; set; }
     [Column("invoice_id", TypeName = "uniqueidentifier")]

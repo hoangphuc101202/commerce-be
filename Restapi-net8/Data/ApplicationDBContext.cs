@@ -35,21 +35,26 @@ namespace Restapi_net8.Data
             modelBuilder.Entity<Status>().HasData(
                 new Status{
                     Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4395"),
-                    Name = "Chờ xác nhận",
-                    Description = "Đơn hàng đang chờ xác nhận",
+                    Name = "Chờ thanh toán",
+                    Description = "Đơn hàng đang chờ thanh toán",
                 },
                 new Status{
                     Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4396"),
-                    Name = "Đơn hàng đang giao",
-                    Description = "Đơn hàng đang được giao",
+                    Name = "Đơn hàng đã thanh toán",
+                    Description = "Đơn hàng đã thanh toán",
                 },
                 new Status{
                     Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4397"),
-                    Name = "Đã giao hàng",
-                    Description = "Đơn hàng đã được giao",
+                    Name = "Đang giao hàng",
+                    Description = "Đơn hàng đang được giao đi",
                 },
                 new Status{
                     Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4398"),
+                    Name = "Giao hàng thành công",
+                    Description = "Đơn hàng giao thành công",
+                },
+                new Status{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4399"),
                     Name = "Đã hủy",
                     Description = "Đơn hàng đã bị hủy",
                 }

@@ -12,6 +12,7 @@ namespace Restapi_net8.Model.Domain
         public string? ProductNameAlias { get; set; }
 
         [ForeignKey("Category")]
+        [Column("category_id")]
         public Guid? CategoryId { get; set; }
 
         [Column("price", TypeName = "decimal(18,2)")]
@@ -33,6 +34,7 @@ namespace Restapi_net8.Model.Domain
         public string? Description { get; set; }
 
         [ForeignKey("Supplier")]
+        [Column("supplier_id")]
         public Guid? SupplierId { get; set; }
     }
 }
