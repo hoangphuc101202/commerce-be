@@ -29,11 +29,13 @@ namespace Restapi_net8.Model.Domain
 
         [ForeignKey("Status")]
         [Column("status_id")]
-        public Guid StatusId { get; set; }
+        public Guid? StatusId { get; set; }
 
         [Column("note", TypeName = "varchar(300)")]
         public string? Note { get; set; }
-
+        [ForeignKey("Status")]
+        [Column("shipping_status")]
+        public Guid? ShippingStatus { get; set; }
 
     }
 }

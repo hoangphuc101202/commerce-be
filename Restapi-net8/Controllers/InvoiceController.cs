@@ -15,16 +15,16 @@ namespace Restapi_net8.Controllers
         {
             this.invoiceService = invoiceService;
         }
-        [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoice request)
+        [HttpPost("checkout")]
+        public async Task<IActionResult> Checkout([FromBody] CheckoutRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            var invoiceCreated = await invoiceService.CreateInvoice(request, userId);
+            var invoiceCreated = await invoiceService.Checkout(request, userId);
             return Ok(invoiceCreated);
         }
     }
