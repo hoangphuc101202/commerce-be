@@ -34,9 +34,9 @@ public class MailService
                     Để tiếp tục, vui lòng nhấn vào nút bên dưới:
                 </p>
                  <p style='text-align: center;'>
-                    <a href='http://localhost:5173/reset-password?email={email}?token={token}' 
+                    <a href='http://localhost:5173/reset-password?email={email}&token={token}' 
                     style='color: #4CAF50; text-decoration: none; font-size: 16px;'>
-                    http://localhost:5173/reset-password?email={email}?token={token}
+                    http://localhost:5173/reset-password?email={email}&token={token}
                     </a>
                 </p>
                 </div>
