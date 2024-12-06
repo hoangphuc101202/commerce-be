@@ -33,9 +33,11 @@ namespace Restapi_net8.Model.Domain
 
         [Column("note", TypeName = "varchar(300)")]
         public string? Note { get; set; }
-        [ForeignKey("Status")]
-        [Column("shipping_status")]
-        public Guid? ShippingStatus { get; set; }
 
+        [ForeignKey("ShippingStatus")]
+        [Column("shipping_status_id")]
+        public Guid? ShippingStatusId { get; set; }
+         public virtual Customer Customer { get; set; }
+        public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; }
     }
 }

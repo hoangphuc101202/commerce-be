@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restapi_net8.Data;
 
@@ -11,9 +12,11 @@ using Restapi_net8.Data;
 namespace Restapi_net8.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241206165002_AddTableShippingStatusChangeForeignKey")]
+    partial class AddTableShippingStatusChangeForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,9 +171,12 @@ namespace Restapi_net8.Migrations
                         .HasColumnType("float")
                         .HasColumnName("shipping_fee");
 
-                    b.Property<Guid?>("ShippingStatusId")
+                    b.Property<Guid?>("ShippingStatus")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("shipping_status_id");
+                        .HasColumnName("shipping_status");
+
+                    b.Property<Guid?>("ShippingStatusId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("StatusId")
                         .HasColumnType("uniqueidentifier")
@@ -405,7 +411,7 @@ namespace Restapi_net8.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(300)")
+                        .HasColumnType("varchar(300)")
                         .HasColumnName("description");
 
                     b.Property<bool>("IsDeleted")
@@ -414,7 +420,7 @@ namespace Restapi_net8.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("varchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -424,24 +430,24 @@ namespace Restapi_net8.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4395"),
-                            Description = "Đơn hàng đang chờ xác nhận",
-                            IsDeleted = false,
-                            Name = "Chờ xác nhận"
-                        },
-                        new
-                        {
-                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4396"),
-                            Description = "Đơn hàng đang giao hàng",
+                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4397"),
+                            Description = "Đơn hàng đang được giao đi",
                             IsDeleted = false,
                             Name = "Đang giao hàng"
                         },
                         new
                         {
-                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4397"),
-                            Description = "Đơn hàng đã giao hàng",
+                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4398"),
+                            Description = "Đơn hàng giao thành công",
                             IsDeleted = false,
-                            Name = "Đã giao hàng"
+                            Name = "Giao hàng thành công"
+                        },
+                        new
+                        {
+                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b4399"),
+                            Description = "Đơn hàng đã bị hủy",
+                            IsDeleted = false,
+                            Name = "Đã hủy"
                         });
                 });
 

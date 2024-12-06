@@ -89,4 +89,9 @@ public class InvoiceService : IInvoiceService
         };
         return new ApiResponse(200, "Checkout successfully", dataCheckout, null);
     }
+
+    public async Task<ApiResponse> Order(OrderRequest request, string userId)
+    {
+        throw new NotImplementedException();
+    }
 }

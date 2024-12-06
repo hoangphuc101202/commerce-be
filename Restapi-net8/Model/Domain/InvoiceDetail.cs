@@ -18,6 +18,6 @@ namespace Restapi_net8.Model.Domain
 
         [Column("price", TypeName = "decimal(18,2)")]
         public double? Price { get; set; }
-
+        public virtual Product Product { get; set; }
     }
 }

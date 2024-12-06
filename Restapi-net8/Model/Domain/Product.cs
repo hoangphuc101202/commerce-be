@@ -36,5 +36,7 @@ namespace Restapi_net8.Model.Domain
         [ForeignKey("Supplier")]
         [Column("supplier_id")]
         public Guid? SupplierId { get; set; }
+        
+        public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; }
     }
 }

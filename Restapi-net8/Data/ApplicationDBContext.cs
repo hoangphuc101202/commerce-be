@@ -19,6 +19,7 @@ namespace Restapi_net8.Data
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<ShippingStatus> ShippingStatuses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -42,21 +43,23 @@ namespace Restapi_net8.Data
                     Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4396"),
                     Name = "Đơn hàng đã thanh toán",
                     Description = "Đơn hàng đã thanh toán",
+                }       
+            );
+            modelBuilder.Entity<ShippingStatus>().HasData(
+                new ShippingStatus{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4395"),
+                    Name = "Chờ xác nhận",
+                    Description = "Đơn hàng đang chờ xác nhận",
                 },
-                new Status{
-                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4397"),
+                new ShippingStatus{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4396"),
                     Name = "Đang giao hàng",
-                    Description = "Đơn hàng đang được giao đi",
+                    Description = "Đơn hàng đang giao hàng",
                 },
-                new Status{
-                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4398"),
-                    Name = "Giao hàng thành công",
-                    Description = "Đơn hàng giao thành công",
-                },
-                new Status{
-                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4399"),
-                    Name = "Đã hủy",
-                    Description = "Đơn hàng đã bị hủy",
+                new ShippingStatus{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4397"),
+                    Name = "Đã giao hàng",
+                    Description = "Đơn hàng đã giao hàng",
                 }
             );
         }
