@@ -37,6 +37,8 @@ namespace Restapi_net8.Model.Domain
         [ForeignKey("ShippingStatus")]
         [Column("shipping_status_id")]
         public Guid? ShippingStatusId { get; set; }
+        [Column("total_amount", TypeName = "decimal(18,2)")]
+        public decimal? TotalAmount { get; set; }
          public virtual Customer Customer { get; set; }
         public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; }
     }

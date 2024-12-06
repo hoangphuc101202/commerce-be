@@ -92,6 +92,55 @@ public class InvoiceService : IInvoiceService
 
     public async Task<ApiResponse> Order(OrderRequest request, string userId)
     {
-        throw new NotImplementedException();
+        var paymentMethod = request.paymentMethod;
+        if (paymentMethod == 0 ){
+            foreach (var item in request.cartItems)
+        {
+            var product = await _productRepository.GetById(Guid.Parse(item.productId));
+            if (product == null)
+            {
+                throw new NotFoundHttpException($"Product with id {item.productId} not found");
+            }
+            if ((product.Views ?? 0) < item.quantity)
+            {
+                throw new BadHttpRequestException($"Product with id {item.productId} has only {product.Views ?? 0} stock left");
+            }
+            long newViews = (long)product.Views - item.quantity;
+            var viewToUpdated = new Product{
+                Views = newViews
+            };
+            await _productRepository.UpdateAsync(product, viewToUpdated);
+        }
+        var invoice = new Invoice
+        {
+            CustomerId = Guid.Parse(userId),
+            StatusId = Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4395"),
+            Address = request.address,
+            PaymentMethod = paymentMethod.ToString(), // 0 = COD, 1 = Bank Transfer
+            ShippingFee = 25000,
+            Note = request.note ?? "",
+            ShippingStatusId = Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4395"),
+            TotalAmount = request.totalAmount
+        };
+        await _invoiceRepository.CreateAsync(invoice);
+        foreach (var item in request.cartItems)
+        {
+            decimal productPrice = (decimal)_productRepository.GetById(Guid.Parse(item.productId)).Result.Price;
+            decimal productDiscount = (decimal)(_productRepository.GetById(Guid.Parse(item.productId)).Result.Discount ?? 0);
+            var invoiceDetail = new InvoiceDetail
+            {
+                InvoiceId = invoice.Id,
+                ProductId = Guid.Parse(item.productId),
+                Quantity = item.quantity,
+                Price = (double)CalculateDiscoutPrice(productPrice, productDiscount),
+            };
+            await _invoiceDetailRepository.CreateAsync(invoiceDetail);
+        }
+        
+            return new ApiResponse(200, "Order successfully", null, null);
+        }
+        else {
+            return new ApiResponse(400, "Payment method is banking", null, null);
+        }
     }
 }
