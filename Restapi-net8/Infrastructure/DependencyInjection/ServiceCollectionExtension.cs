@@ -18,6 +18,8 @@ namespace Restapi_net8.Infrastructure.DependencyInjection
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IInvoiceRepository, InvoiceRepository>();
             services.AddScoped<IInvoiceDetailRepository, InvoiceDetailRepository>();
+            services.AddScoped<IStatusRepository, StatusRepository>();
+            services.AddScoped<IShippingStatusRepository, ShippingStatusRepository>();
         }
         public static void AddServices(this IServiceCollection services)
         {

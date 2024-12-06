@@ -39,5 +39,26 @@ namespace Restapi_net8.Controllers
             var invoiceCreated = await invoiceService.Order(request, userId);
             return Ok(invoiceCreated);
         }
+        [Authorize]
+        [HttpGet("status")]
+        public async Task<IActionResult> GetStatus()
+        {
+            var invoiceStatus = await invoiceService.GetStatus();
+            return Ok(invoiceStatus);
+        }
+        [Authorize]
+        [HttpGet("shipping-status")]
+        public async Task<IActionResult> GetShippingStatus()
+        {
+            var shippingStatus = await invoiceService.GetShippingStatus();
+            return Ok(shippingStatus);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var invoices = await invoiceService.GetAll();
+            return Ok(invoices);
+        }
     }
 }

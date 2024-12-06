@@ -10,11 +10,15 @@ public class InvoiceService : IInvoiceService
     private readonly IProductRepository _productRepository;
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly IInvoiceDetailRepository _invoiceDetailRepository;
-    public InvoiceService(IProductRepository productRepository, IInvoiceRepository invoiceRepository, IInvoiceDetailRepository invoiceDetailRepository)
+    private readonly IStatusRepository _statusRepository;
+    private readonly IShippingStatusRepository _shippingStatusRepository;
+    public InvoiceService(IShippingStatusRepository shippingStatusRepository,IProductRepository productRepository, IInvoiceRepository invoiceRepository, IInvoiceDetailRepository invoiceDetailRepository, IStatusRepository statusRepository)
     {
         _productRepository = productRepository;
         _invoiceRepository = invoiceRepository;
         _invoiceDetailRepository = invoiceDetailRepository;
+        _statusRepository = statusRepository;
+        _shippingStatusRepository = shippingStatusRepository;
     }
     private decimal CalculateDiscoutPrice(decimal price, decimal discount)
     {
@@ -39,37 +43,9 @@ public class InvoiceService : IInvoiceService
             }
             productDiscount = (decimal)((product.Discount ?? 0) * product.Price) / 100;
             productPrice = ((decimal)product.Price - productDiscount) * item.quantity;
-            // long newViews = (long)product.Views - item.quantity;
-            // var viewToUpdated = new Product{
-            //     Views = newViews
-            // };
-            // await _productRepository.UpdateAsync(product, viewToUpdated);
             totalAmount += productPrice;
         }
         totalAmount += 25000; // Shipping fee
-        // var invoice = new Invoice
-        // {
-        //     CustomerId = Guid.Parse(userId),
-        //     StatusId = Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4395"),
-        //     Address = request.address,
-        //     PaymentMethod = request.paymentMethod,
-        //     ShippingFee = 25000,
-        //     Note = request.note ?? "",
-        // };
-        // await _invoiceRepository.CreateAsync(invoice);
-        // foreach (var item in request.cartItems)
-        // {
-        //     decimal productPrice = (decimal)_productRepository.GetById(Guid.Parse(item.productId)).Result.Price;
-        //     decimal productDiscount = (decimal)(_productRepository.GetById(Guid.Parse(item.productId)).Result.Discount ?? 0);
-        //     var invoiceDetail = new InvoiceDetail
-        //     {
-        //         InvoiceId = invoice.Id,
-        //         ProductId = Guid.Parse(item.productId),
-        //         Quantity = item.quantity,
-        //         Price = (double)CalculateDiscoutPrice(productPrice, productDiscount),
-        //     };
-        //     await _invoiceDetailRepository.CreateAsync(invoiceDetail);
-        // }
         var cartItems = new List<CartItem>();
         foreach (var item in request.cartItems)
         {
@@ -142,5 +118,40 @@ public class InvoiceService : IInvoiceService
         else {
             return new ApiResponse(400, "Payment method is banking", null, null);
         }
+    }
+    public async Task<ApiResponse> GetStatus(){
+        var status = await _statusRepository.GetAll();
+        var data = status.Select(s => new StatusDTO
+        {
+            id = s.Id.ToString(),
+            name = s.Name
+        }).ToList();
+        return new ApiResponse(200, "Get status successfully", data, null);
+    }
+    public async Task<ApiResponse>GetShippingStatus(){
+        var status = await _shippingStatusRepository.GetAll();
+        var data = status.Select(s => new StatusDTO
+        {
+            id = s.Id.ToString(),
+            name = s.Name
+        }).ToList();
+        return new ApiResponse(200, "Get status shipping successfully", data, null);
+    }
+    public async Task<ApiResponse> GetAll()
+    {
+        // var invoices = await _invoiceRepository.GetAll();
+        // var data = invoices.Select(i => new InvoiceDTO
+        // {
+        //     id = i.Id.ToString(),
+        //     address = i.Address,
+        //     totalAmount = i.TotalAmount,
+        //     status = i.Status.Name,
+        //     shippingStatus = i.ShippingStatus.Name,
+        //     paymentMethod = i.PaymentMethod,
+        //     shippingFee = i.ShippingFee,
+        //     note = i.Note,
+        //     createdAt = i.CreatedAt
+        // }).ToList();
+        return new ApiResponse(200, "Get all invoices successfully", null, null);
     }
 }
