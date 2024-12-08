@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Restapi_net8.Exceptions.Http;
 using Restapi_net8.Middlewares;
@@ -137,21 +139,119 @@ public class InvoiceService : IInvoiceService
         }).ToList();
         return new ApiResponse(200, "Get status shipping successfully", data, null);
     }
-    public async Task<ApiResponse> GetAll()
+    public async Task<ApiResponse> GetAll(GetAllInvoiceRequest request)
     {
-        // var invoices = await _invoiceRepository.GetAll();
-        // var data = invoices.Select(i => new InvoiceDTO
-        // {
-        //     id = i.Id.ToString(),
-        //     address = i.Address,
-        //     totalAmount = i.TotalAmount,
-        //     status = i.Status.Name,
-        //     shippingStatus = i.ShippingStatus.Name,
-        //     paymentMethod = i.PaymentMethod,
-        //     shippingFee = i.ShippingFee,
-        //     note = i.Note,
-        //     createdAt = i.CreatedAt
-        // }).ToList();
-        return new ApiResponse(200, "Get all invoices successfully", null, null);
+        var limit = request.limit ?? 12;
+        var page = request.page ?? 1;
+        var startDate = request.startDate ?? null;
+        var endDate = request.endDate ?? null;
+        var status = request.statusShipping ?? null;
+        if (!string.IsNullOrEmpty(startDate) || !string.IsNullOrEmpty(endDate)){
+            if (!DateTime.TryParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+            {
+                throw new BadRequestHttpException("Start date is invalid. It must be in the format YYYY-MM-DD.");
+            }
+        }
+        if (!string.IsNullOrEmpty(status)){
+            if (status != "Chờ xác nhận" || status != "Đang giao hàng" || status != "Đã giao hàng" || status != "Đã hủy"){
+                throw new BadRequestHttpException("Status is invalid. It must be in the format Chờ xác nhận, Đang giao hàng, Đã giao hàng, Đã hủy.");
+            }
+        }
+        var invoices = await _invoiceRepository.GetAll();
+        var data = invoices.Select(i => new InvoiceDTO
+        {
+            id = i.Id.ToString(),
+            orderDate = i.OrderDate.ToString(),
+            totalAmount = i.TotalAmount ?? 0,
+            status = i.Status.Name,
+            shippingStatus = i.ShippingStatus.Name,
+            customeName = i.Customer.FullName,
+            cancelDate = i.CancelDate.ToString() ?? "",
+            deliveryDate = i.DeliveryDate.ToString()  ?? "",
+            shippingDate =  i.DeliveryDate.ToString()  ?? ""
+        }).ToList();
+        return new ApiResponse(200, "Get all invoices successfully", data, null);
+         
+    }
+
+    public async Task<ApiResponse> getOrderOfUser(Guid id)
+    {
+        try{
+            var invoices = await _invoiceRepository.GetByConditionAsync(id);
+            if(invoices.Count() == 0){
+                return new ApiResponse(404, "User has no order", null, null);
+            }
+            var data = invoices.Select(i => new InvoiceDTO{
+                id = i.Id.ToString(),
+                orderDate = i.OrderDate.ToString(),
+                totalAmount = i.TotalAmount ?? 0,
+                status = i.Status.Name,
+                shippingStatus = i.ShippingStatus.Name,
+                cancelDate = i.CancelDate.ToString() ?? "",
+                deliveryDate = i.DeliveryDate.ToString()  ?? "",
+                shippingDate =  i.DeliveryDate.ToString()  ?? ""
+            });
+            return new ApiResponse(200, "Get order of user successfully", data, null);
+        }
+        catch(Exception e){
+            Log.Error(e, "Error when get order of user");
+            throw new InternalServerErrorHttpException("Error when get order of user");
+        }
+    }
+    public async Task<ApiResponse> GetInvoice(string id, string role, string userId){
+        if (role == "Admin") {
+            var invoice = await _invoiceRepository.GetInvoiceId(Guid.Parse(id));
+            if(invoice == null){
+                throw new NotFoundHttpException($"Invoice with id {id} not found");
+            }
+            var invoiceDetails = await _invoiceDetailRepository.GetByInvoiceId(Guid.Parse(id));
+            var details = invoiceDetails.Select(i => new InvoiceDetailDTO
+            {
+                productName = i.Product.Name,
+                quantity = i.Quantity ?? 0,
+                price = i.Price ?? 0
+            }).ToList();
+            var data = new {
+                id = invoice.Id.ToString(),
+                orderDate = invoice.OrderDate.ToString(),
+                totalAmount = invoice.TotalAmount ?? 0,
+                status = invoice.Status.Name,
+                shippingStatus = invoice.ShippingStatus.Name,
+                customeName = invoice.Customer.FullName,
+                cancelDate = invoice.CancelDate.ToString() ?? "",
+                deliveryDate = invoice.DeliveryDate.ToString()  ?? "",
+                shippingDate =  invoice.DeliveryDate.ToString()  ?? "",
+                invoiceDetil = details
+            };
+            return new ApiResponse(200, "Get invoice successfully", data, null);
+        }
+        else {
+            var invoice = await _invoiceRepository.GetInvoiceId(Guid.Parse(id));
+            if(invoice == null){
+                throw new NotFoundHttpException($"Invoice with id {id} not found");
+            }
+            if(invoice.CustomerId.ToString() != userId){
+                throw new BadRequestHttpException("You do not have permission to access this invoice");    
+            }
+            var invoiceDetails = await _invoiceDetailRepository.GetByInvoiceId(Guid.Parse(id));
+            var details = invoiceDetails.Select(i => new InvoiceDetailDTO
+            {
+                productName = i.Product.Name,
+                quantity = i.Quantity ?? 0,
+                price = i.Price ?? 0
+            }).ToList();
+            var data = new {
+                id = invoice.Id.ToString(),
+                orderDate = invoice.OrderDate.ToString(),
+                totalAmount = invoice.TotalAmount ?? 0,
+                status = invoice.Status.Name,
+                shippingStatus = invoice.ShippingStatus.Name,
+                cancelDate = invoice.CancelDate.ToString() ?? "",
+                deliveryDate = invoice.DeliveryDate.ToString()  ?? "",
+                shippingDate =  invoice.DeliveryDate.ToString()  ?? "",
+                invoiceDetil = details
+            };
+            return new ApiResponse(200, "Get Detail invoice successfully", data, null);
+        }   
     }
 }

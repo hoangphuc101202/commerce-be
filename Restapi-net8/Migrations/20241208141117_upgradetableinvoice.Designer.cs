@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restapi_net8.Data;
 
@@ -11,9 +12,11 @@ using Restapi_net8.Data;
 namespace Restapi_net8.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241208141117_upgradetableinvoice")]
+    partial class upgradetableinvoice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -446,13 +449,6 @@ namespace Restapi_net8.Migrations
                             Description = "Đơn hàng đã giao hàng",
                             IsDeleted = false,
                             Name = "Đã giao hàng"
-                        },
-                        new
-                        {
-                            Id = new Guid("c62e3c10-5e07-427e-a55a-45cd301b5397"),
-                            Description = "Đơn hàng đã hủy",
-                            IsDeleted = false,
-                            Name = "Đã hủy"
                         });
                 });
 

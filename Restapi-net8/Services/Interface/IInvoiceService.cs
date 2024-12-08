@@ -5,5 +5,7 @@ public interface IInvoiceService{
     Task<ApiResponse> Order(OrderRequest request, string userId);
     Task<ApiResponse> GetStatus();
     Task<ApiResponse> GetShippingStatus();
-    Task<ApiResponse> GetAll();
+    Task<ApiResponse> GetAll(GetAllInvoiceRequest request);
+    Task<ApiResponse> getOrderOfUser(Guid id);
+    Task<ApiResponse> GetInvoice(string id, string role, string userId);
 }

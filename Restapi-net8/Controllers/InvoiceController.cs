@@ -55,10 +55,27 @@ namespace Restapi_net8.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetAllInvoiceRequest request)
         {
-            var invoices = await invoiceService.GetAll();
+            var invoices = await invoiceService.GetAll(request);
             return Ok(invoices);
+        }
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<IActionResult> GetOrderOfUser()
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var invoices = await invoiceService.getOrderOfUser(Guid.Parse(userId));
+            return Ok(invoices);
+        }
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetInvoice([FromRoute] string id)
+        {
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var invoice = await invoiceService.GetInvoice(id, role, userId);
+            return Ok(invoice);
         }
     }
 }

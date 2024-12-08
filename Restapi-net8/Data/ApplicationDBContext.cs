@@ -60,6 +60,11 @@ namespace Restapi_net8.Data
                     Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B4397"),
                     Name = "Đã giao hàng",
                     Description = "Đơn hàng đã giao hàng",
+                },
+                new ShippingStatus{
+                    Id = new Guid("C62E3C10-5E07-427E-A55A-45CD301B5397"),
+                    Name = "Đã hủy",
+                    Description = "Đơn hàng đã hủy",
                 }
             );
         }

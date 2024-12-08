@@ -14,7 +14,7 @@ namespace Restapi_net8.Model.Domain
         [Column("cancel_date", TypeName = "datetime2")]
         public DateTime? CancelDate { get; set; }
 
-        [Column("address", TypeName = "varchar(200)")]
+        [Column("address", TypeName = "nvarchar(200)")]
         public string? Address { get; set; }
 
         [Column("payment_method", TypeName = "varchar(200)")]
@@ -31,7 +31,7 @@ namespace Restapi_net8.Model.Domain
         [Column("status_id")]
         public Guid? StatusId { get; set; }
 
-        [Column("note", TypeName = "varchar(300)")]
+        [Column("note", TypeName = "nvarchar(300)")]
         public string? Note { get; set; }
 
         [ForeignKey("ShippingStatus")]
@@ -39,7 +39,9 @@ namespace Restapi_net8.Model.Domain
         public Guid? ShippingStatusId { get; set; }
         [Column("total_amount", TypeName = "decimal(18,2)")]
         public decimal? TotalAmount { get; set; }
-         public virtual Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
+        public virtual Status Status { get; set; }
+        public virtual ShippingStatus ShippingStatus { get; set; }
         public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; }
     }
 }

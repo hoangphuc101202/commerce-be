@@ -7,6 +7,5 @@ public class InvoiceDTO{
     public string status { get; set; }
     public string shippingStatus { get; set; }
     public decimal totalAmount { get; set; }
-
     public string customeName { get; set; }
 }
