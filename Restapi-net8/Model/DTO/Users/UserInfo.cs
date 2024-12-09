@@ -7,4 +7,5 @@ public class UserInfo
     public string address { get; set; }
     public string phone { get; set; }
     public string imageUrl { get; set; }
+    public bool isVerify { get; set; }
 }
