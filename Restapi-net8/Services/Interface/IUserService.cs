@@ -17,5 +17,6 @@ namespace Restapi_net8.Services.Interface
         Task<ApiResponse>VerifyTokenService(VerifyToken request);
         Task<ApiResponse>ResetPasswordService(ResetPassword request);
         Task<ApiResponse>ChangePasswordService(ChangePassword request, string userId);
+        Task<ApiResponse>VerifyEmailService(string email);
     }
 }

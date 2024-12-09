@@ -35,6 +35,9 @@ namespace Restapi_net8.Model.Domain
         [Column("role", TypeName = "varchar(50)")]
         public string? Role { get; set; }
 
+        [Column("is_verify", TypeName = "bit")]
+        public bool IsVerify { get; set; } = false;
+
         public virtual ICollection<Invoice> Invoices { get; set; }
 
     }

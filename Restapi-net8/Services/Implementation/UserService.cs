@@ -197,6 +197,32 @@ namespace Restapi_net8.Services.Implementation
         {
             var token = request.token;
             var email = request.email;
+            var verifyEmail = request.verifyEmail;
+            if(verifyEmail == "True"){
+                Log.Debug("Token {0}", token);
+                var userExist = await _usersRepository.GetEmailUser(email);
+                if (userExist == null)
+                {
+                    throw new BadRequestHttpException("Email not found");
+                }
+                if (userExist.IsVerify)
+                {
+                    throw new BadRequestHttpException("Email is verified");
+                }
+                var tokenExistVerify = await _distributedCache.GetStringAsync($"TokenVerifyEmail:{email}");
+                if (tokenExistVerify != token)
+                {
+                    throw new BadRequestHttpException("Token is invalid");
+                }
+                userExist.IsVerify = true;
+                var userToUpdate = new Customer
+                {
+                    IsVerify = true
+                };
+                await _usersRepository.UpdateAsync(userExist, userToUpdate);
+                await _distributedCache.RemoveAsync($"TokenVerifyEmail:{email}");
+                return new ApiResponse(200, "Email is verified", null, null);
+            }
             var tokenExist = await _distributedCache.GetStringAsync($"TokenForgetPassword:{email}");
             if (tokenExist != token)
             {
@@ -250,6 +276,35 @@ namespace Restapi_net8.Services.Implementation
             };
             await _usersRepository.UpdateAsync(userExist, userToUpdate);
             return new ApiResponse(200, "Change password successful", null, null);
+        }
+
+        public async Task<ApiResponse> VerifyEmailService(string email)
+        {
+            var userExist = await _usersRepository.GetEmailUser(email);
+            if (userExist == null)
+            {
+                throw new BadRequestHttpException("Email not found");
+            }
+            if (userExist.IsVerify)
+            {
+                throw new BadRequestHttpException("Email is verified");
+            }
+            var tokenExist = await _distributedCache.GetStringAsync($"TokenVerifyEmail:{email}");
+            if (tokenExist != null)
+            {
+                await _distributedCache.RemoveAsync($"TokenVerifyEmail:{email}");
+            }
+            Guid g = Guid.NewGuid();
+            string GuidString = Convert.ToBase64String(g.ToByteArray());
+            GuidString = GuidString.Replace("=", "");
+            GuidString = GuidString.Replace("+", "");
+            var cacheEntryOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            };
+            await _distributedCache.SetStringAsync($"TokenVerifyEmail:{email}", GuidString, cacheEntryOptions);
+            var mailResponse = await _mailService.SendMailVerify(email, GuidString);
+            return new ApiResponse(200, mailResponse, null, null);
         }
     }
 }

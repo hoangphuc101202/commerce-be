@@ -124,5 +124,13 @@ namespace Restapi_net8.Controllers
             var changePassword = await userService.ChangePasswordService(request, userId);
             return Ok(changePassword);
         }
+        [Authorize]
+        [HttpGet("verify-email")]
+        public async Task<IActionResult> VerifyEmail()
+        {
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var verifyEmail = await userService.VerifyEmailService(userEmail);
+            return Ok(verifyEmail);
+        }
     }
 }
