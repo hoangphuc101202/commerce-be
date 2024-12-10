@@ -153,11 +153,21 @@ public class InvoiceService : IInvoiceService
             }
         }
         if (!string.IsNullOrEmpty(status)){
-            if (status != "Chờ xác nhận" || status != "Đang giao hàng" || status != "Đã giao hàng" || status != "Đã hủy"){
-                throw new BadRequestHttpException("Status is invalid. It must be in the format Chờ xác nhận, Đang giao hàng, Đã giao hàng, Đã hủy.");
+            var validStatuses = new[] 
+            { 
+                "Chờ xác nhận", 
+                "Đang giao hàng", 
+                "Đã giao hàng", 
+                "Đã hủy" 
+            };
+            if (!validStatuses.Contains(status))
+            {
+                throw new BadRequestHttpException(
+                    "Status is invalid. It must be in the format Chờ xác nhận, Đang giao hàng, Đã giao hàng, Đã hủy."
+                );
             }
         }
-        var invoices = await _invoiceRepository.GetAll();
+        var invoices = await _invoiceRepository.GetAllInvoiceWithPage(limit, page, startDate, endDate, status);
         var data = invoices.Select(i => new InvoiceDTO
         {
             id = i.Id.ToString(),
@@ -170,7 +180,14 @@ public class InvoiceService : IInvoiceService
             deliveryDate = i.DeliveryDate.ToString()  ?? "",
             shippingDate =  i.DeliveryDate.ToString()  ?? ""
         }).ToList();
-        return new ApiResponse(200, "Get all invoices successfully", data, null);
+
+        var result = new {
+            data = data,
+             total = data.Count(),
+            limit = limit,
+            page = page
+        };
+        return new ApiResponse(200, "Get all invoices successfully", result, null);
          
     }
 
