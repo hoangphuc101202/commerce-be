@@ -177,13 +177,12 @@ public class InvoiceService : IInvoiceService
             shippingStatus = i.ShippingStatus.Name,
             customeName = i.Customer.FullName,
             cancelDate = i.CancelDate.ToString() ?? "",
-            deliveryDate = i.DeliveryDate.ToString()  ?? "",
             shippingDate =  i.DeliveryDate.ToString()  ?? ""
         }).ToList();
 
         var result = new {
             data = data,
-             total = data.Count(),
+            total = data.Count(),
             limit = limit,
             page = page
         };
@@ -205,7 +204,6 @@ public class InvoiceService : IInvoiceService
                 status = i.Status.Name,
                 shippingStatus = i.ShippingStatus.Name,
                 cancelDate = i.CancelDate.ToString() ?? "",
-                deliveryDate = i.DeliveryDate.ToString()  ?? "",
                 shippingDate =  i.DeliveryDate.ToString()  ?? ""
             });
             return new ApiResponse(200, "Get order of user successfully", data, null);
@@ -236,7 +234,6 @@ public class InvoiceService : IInvoiceService
                 shippingStatus = invoice.ShippingStatus.Name,
                 customeName = invoice.Customer.FullName,
                 cancelDate = invoice.CancelDate.ToString() ?? "",
-                deliveryDate = invoice.DeliveryDate.ToString()  ?? "",
                 shippingDate =  invoice.DeliveryDate.ToString()  ?? "",
                 invoiceDetil = details
             };
@@ -264,11 +261,49 @@ public class InvoiceService : IInvoiceService
                 status = invoice.Status.Name,
                 shippingStatus = invoice.ShippingStatus.Name,
                 cancelDate = invoice.CancelDate.ToString() ?? "",
-                deliveryDate = invoice.DeliveryDate.ToString()  ?? "",
                 shippingDate =  invoice.DeliveryDate.ToString()  ?? "",
                 invoiceDetil = details
             };
             return new ApiResponse(200, "Get Detail invoice successfully", data, null);
         }   
+    }
+    public async Task<ApiResponse> UpdateInvoiceForAdmin(UpdateInvoiceRequest request, string id){
+        var invoice = await _invoiceRepository.GetInvoiceId(Guid.Parse(id));
+        if(invoice == null){
+            throw new NotFoundHttpException($"Invoice with id {id} not found");
+        }
+        if(request.shippingStatus != null){
+            var shippingStatusExist = await _shippingStatusRepository.GetById(Guid.Parse(request.shippingStatus));
+            if(shippingStatusExist == null){
+                throw new NotFoundHttpException($"Shipping status with id {request.shippingStatus} not found");
+            }           
+            if(invoice.ShippingStatus.Id == Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4396")){
+                if(shippingStatusExist.Name == "Đã hủy"){
+                    throw new BadRequestHttpException("Invoice delivering, cannot be canceled");
+                }
+            }
+            if(shippingStatusExist.Name == "Đang giao hàng" || shippingStatusExist.Name == "Đã giao hàng"){
+                if(invoice.ShippingStatus.Name == "Đã hủy"){
+                    throw new BadRequestHttpException("Invoice has been canceled, cannot be delivered");
+                }
+            }
+            if(shippingStatusExist.Name == "Đã giao hàng"){
+                invoice.DeliveryDate = DateTime.Now;
+            }
+            if(shippingStatusExist.Name == "Đã hủy"){
+                if(invoice.Status.Id == Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4396"))
+                {
+                    throw new BadRequestHttpException("Invoice has been paid, cannot be canceled");
+                }
+                if(invoice.ShippingStatus.Id == Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4397"))
+                {
+                    throw new BadRequestHttpException("Invoice has been delivered, cannot be canceled");
+                }
+                invoice.CancelDate = DateTime.Now;
+            }
+            invoice.ShippingStatusId = Guid.Parse(request.shippingStatus);
+        }
+        await _invoiceRepository.UpdateAsync(invoice, invoice);
+        return new ApiResponse(200, "Update invoice successfully", null, null);
     }
 }

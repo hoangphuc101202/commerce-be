@@ -77,5 +77,16 @@ namespace Restapi_net8.Controllers
             var invoice = await invoiceService.GetInvoice(id, role, userId);
             return Ok(invoice);
         }
+        [Authorize(Roles = "Admin")]
+        [HttpPut("admin/{id}")]
+        public async Task<IActionResult> UpdateInvoice([FromRoute] string id, [FromBody] UpdateInvoiceRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var invoiceUpdated = await invoiceService.UpdateInvoiceForAdmin(request, id);
+            return Ok(invoiceUpdated);
+        }
     }
 }
