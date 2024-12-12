@@ -88,5 +88,17 @@ namespace Restapi_net8.Controllers
             var invoiceUpdated = await invoiceService.UpdateInvoiceForAdmin(request, id);
             return Ok(invoiceUpdated);
         }
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateInvoiceForUser([FromRoute] string id, [FromBody] UpdateInvoiceRequestForUser request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var invoiceUpdated = await invoiceService.UpdateInvoiceForUser(request, id, userId);
+            return Ok(invoiceUpdated);
+        }
     }
 }

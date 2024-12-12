@@ -306,4 +306,41 @@ public class InvoiceService : IInvoiceService
         await _invoiceRepository.UpdateAsync(invoice, invoice);
         return new ApiResponse(200, "Update invoice successfully", null, null);
     }
+    public async Task<ApiResponse> UpdateInvoiceForUser(UpdateInvoiceRequestForUser request, string id, string userId ){
+        var invoice = await _invoiceRepository.GetInvoiceId(Guid.Parse(id));
+        if(invoice == null){
+            throw new NotFoundHttpException($"Invoice with id {id} not found");
+        }
+        if(invoice.CustomerId.ToString() != userId){
+            throw new BadRequestHttpException("You do not have permission to access this invoice");
+        }
+        if(request.shippingStatus != null){
+            var shippingStatusExist = await _shippingStatusRepository.GetById(Guid.Parse(request.shippingStatus));
+            if(shippingStatusExist == null){
+                throw new NotFoundHttpException($"Shipping status with id {request.shippingStatus} not found");
+            }
+            if(shippingStatusExist.Name == "Đang giao hàng" || shippingStatusExist.Name == "Đã giao hàng"){
+                throw new BadRequestHttpException("Cannot update shipping status");
+            }
+            if(invoice.ShippingStatus.Id == Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4396")){
+                if(shippingStatusExist.Name == "Đã hủy"){
+                    throw new BadRequestHttpException("Invoice delivering, cannot be canceled");
+                }
+            }
+            if(shippingStatusExist.Name == "Đã hủy"){
+                if(invoice.Status.Id == Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4396"))
+                {
+                    throw new BadRequestHttpException("Invoice has been paid, cannot be canceled");
+                }
+                if(invoice.ShippingStatus.Id == Guid.Parse("C62E3C10-5E07-427E-A55A-45CD301B4397"))
+                {
+                    throw new BadRequestHttpException("Invoice has been delivered, cannot be canceled");
+                }
+                invoice.CancelDate = DateTime.Now;
+            }
+            invoice.ShippingStatusId = Guid.Parse(request.shippingStatus);
+        }
+        await _invoiceRepository.UpdateAsync(invoice, invoice);
+        return new ApiResponse(200, "Update invoice successfully", null, null);
+    }
 }

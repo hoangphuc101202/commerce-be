@@ -9,4 +9,5 @@ public interface IInvoiceService{
     Task<ApiResponse> getOrderOfUser(Guid id);
     Task<ApiResponse> GetInvoice(string id, string role, string userId);
     Task<ApiResponse> UpdateInvoiceForAdmin(UpdateInvoiceRequest request, string id);
+    Task<ApiResponse> UpdateInvoiceForUser(UpdateInvoiceRequestForUser request, string id, string userId);
 }
