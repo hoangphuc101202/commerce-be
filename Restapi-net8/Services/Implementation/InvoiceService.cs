@@ -176,8 +176,10 @@ public class InvoiceService : IInvoiceService
             status = i.Status.Name,
             shippingStatus = i.ShippingStatus.Name,
             customeName = i.Customer.FullName,
+            customerId = i.CustomerId.ToString(),
             cancelDate = i.CancelDate.ToString() ?? "",
-            shippingDate =  i.DeliveryDate.ToString()  ?? ""
+            shippingDate =  i.DeliveryDate.ToString()  ?? "",
+            paymentMethod = i.PaymentMethod == "0" ? "Thanh toán khi nhận hàng" : "Thanh toán bằng VNPay"
         }).ToList();
 
         var result = new {
@@ -204,7 +206,8 @@ public class InvoiceService : IInvoiceService
                 status = i.Status.Name,
                 shippingStatus = i.ShippingStatus.Name,
                 cancelDate = i.CancelDate.ToString() ?? "",
-                shippingDate =  i.DeliveryDate.ToString()  ?? ""
+                shippingDate =  i.DeliveryDate.ToString()  ?? "",
+                paymentMethod = i.PaymentMethod == "0" ? "Thanh toán khi nhận hàng" : "Thanh toán bằng VNPay"
             });
             return new ApiResponse(200, "Get order of user successfully", data, null);
         }
@@ -233,8 +236,10 @@ public class InvoiceService : IInvoiceService
                 status = invoice.Status.Name,
                 shippingStatus = invoice.ShippingStatus.Name,
                 customeName = invoice.Customer.FullName,
+                customerId = invoice.CustomerId.ToString(),
                 cancelDate = invoice.CancelDate.ToString() ?? "",
                 shippingDate =  invoice.DeliveryDate.ToString()  ?? "",
+                paymentMethod = invoice.PaymentMethod == "0" ? "Thanh toán khi nhận hàng" : "Thanh toán bằng VNPay",
                 invoiceDetil = details
             };
             return new ApiResponse(200, "Get invoice successfully", data, null);
@@ -262,6 +267,7 @@ public class InvoiceService : IInvoiceService
                 shippingStatus = invoice.ShippingStatus.Name,
                 cancelDate = invoice.CancelDate.ToString() ?? "",
                 shippingDate =  invoice.DeliveryDate.ToString()  ?? "",
+                paymentMethod = invoice.PaymentMethod == "0" ? "Thanh toán khi nhận hàng" : "Thanh toán bằng VNPay",
                 invoiceDetil = details
             };
             return new ApiResponse(200, "Get Detail invoice successfully", data, null);

@@ -12,9 +12,12 @@ public class Payment : BaseDomain
     public double? Amount { get; set; }
     [Column("payment_method", TypeName = "varchar(200)")]
     public string? PaymentMethod { get; set; }
+    [ForeignKey("Customer")]
     [Column("customer_id", TypeName = "uniqueidentifier")]
     public Guid? CustomerId { get; set; }
+    [ForeignKey("Invoice")]
     [Column("invoice_id", TypeName = "uniqueidentifier")]
     public Guid? InvoiceId { get; set; }
 
+    public virtual Customer Customer { get; set; }
 }

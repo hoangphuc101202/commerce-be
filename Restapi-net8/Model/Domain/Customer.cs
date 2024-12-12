@@ -39,6 +39,6 @@ namespace Restapi_net8.Model.Domain
         public bool IsVerify { get; set; } = false;
 
         public virtual ICollection<Invoice> Invoices { get; set; }
-
+        public virtual ICollection<Payment> Payments { get; set; }
     }
 }
