@@ -20,6 +20,7 @@ public class InvoiceRepository : BaseRepository<Invoice>, IInvoiceRepository
                                         .Include(i => i.Status)
                                         .Include(i => i.ShippingStatus)
                                         .Include(i => i.Customer)
+                                        .OrderByDescending(i => i.OrderDate) 
                                         .ToListAsync();
     }
 
@@ -56,6 +57,7 @@ public class InvoiceRepository : BaseRepository<Invoice>, IInvoiceRepository
         {
             query = query.Where(i => i.ShippingStatus.Name == statusShipping);
         }
+        query = query.OrderByDescending(i => i.OrderDate);
         return await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
     }
 }

@@ -21,6 +21,7 @@ namespace Restapi_net8.Infrastructure.DependencyInjection
             services.AddScoped<IStatusRepository, StatusRepository>();
             services.AddScoped<IShippingStatusRepository, ShippingStatusRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();  
         }
         public static void AddServices(this IServiceCollection services)
         {
@@ -29,6 +30,7 @@ namespace Restapi_net8.Infrastructure.DependencyInjection
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<ISupplierService, SupplierService>();
         }
         public static void AddAutoMapper(this IServiceCollection services)
         {

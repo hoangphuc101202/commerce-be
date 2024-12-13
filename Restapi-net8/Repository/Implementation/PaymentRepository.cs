@@ -30,6 +30,7 @@ public class PaymentRepository : BaseRepository<Payment>, IPaymentRepository
                 .AddSeconds(-1); 
             query = query.Where(i => i.PaymentDate <= parsedEndDate);
         }
+        query = query.OrderByDescending(i => i.PaymentDate);
         return await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
     }
 
@@ -44,6 +45,6 @@ public class PaymentRepository : BaseRepository<Payment>, IPaymentRepository
     }
     public async Task<IEnumerable<Payment>> GetPaymentByUser(Guid userId)
     {
-        return await _dbContext.Payments.Where(x => x.CustomerId == userId).ToListAsync();
+        return await _dbContext.Payments.Where(x => x.CustomerId == userId).OrderByDescending(i => i.PaymentDate).ToListAsync();
     }
 }
