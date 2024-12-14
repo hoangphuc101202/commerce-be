@@ -63,10 +63,9 @@ This project is an e-commerce backend API built using .NET 8.0 and C#. It provid
 - That listen on port http://localhost:5299
 
 #### With Docker
-   ```git clone https://github.com/yourusername/commerce-be.git```
-   ```cd commerce-be```
-   ```cd Restapi-net8```
-    
+
+```sh git clone https://github.com/yourusername/commerce-be.git cd commerce-be cd Restapi-net8
+
 # Run Docker compose:
 
 ```docker-compose up -d```
