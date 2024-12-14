@@ -4,9 +4,7 @@ public class CreateProductRequestDTO
 {
     [MaxLength(100, ErrorMessage = "must not exceed 50 characters. ")]
     [Required(ErrorMessage = "name is required. ")]
-    [RegularExpression(@"^[\p{L}\p{N}\s]*$", ErrorMessage = "name must be alphanumeric. ")]
     public string name { get; set; }
-    [RegularExpression(@"^[\p{L}\p{N}\s]*$", ErrorMessage = "product alias name must be alphanumeric. ")]
     [MaxLength(50, ErrorMessage = "must not exceed 50 characters. ")]
     public string? productNameAlias { get; set; }
 
@@ -16,7 +14,6 @@ public class CreateProductRequestDTO
     public string? productDate { get; set; }
     public float? discount { get; set; }
     public long? views { get; set;  }
-    [RegularExpression(@"^[\p{L}\p{N}\s]*$", ErrorMessage = "name must be alphanumeric. ")]
     [MaxLength(300, ErrorMessage = "must not exceed 300 characters. ")]
     public string? description { get; set; }
     public string? supplierId { get; set; }
