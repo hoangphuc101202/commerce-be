@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restapi_net8.Model.Domain;
 using Restapi_net8.Model.DTO.Users;
 using Restapi_net8.Services.Interface;
+using StackExchange.Redis;
 
 namespace Restapi_net8.Controllers
 {
@@ -131,6 +132,35 @@ namespace Restapi_net8.Controllers
             var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
             var verifyEmail = await userService.VerifyEmailService(userEmail);
             return Ok(verifyEmail);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("get-all-users")]
+        public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsers request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var getAllUsers = await userService.GetAllUsersService(request);
+            return Ok(getAllUsers);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPut("update-role/{id}")]
+        public async Task<IActionResult> UpdateRole([FromBody] UpdateRole request, [FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var updateRole = await userService.UpdateRoleService(request, id);
+            return Ok(updateRole);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("delete-user/{id}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string id)
+        {
+            var deleteUser = await userService.DeleteUserService(id);
+            return Ok(deleteUser);
         }
     }
 }

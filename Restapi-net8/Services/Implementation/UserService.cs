@@ -173,7 +173,7 @@ namespace Restapi_net8.Services.Implementation
             var userExist = await _usersRepository.GetEmailUser(email);
             if (userExist == null)
             {
-                throw new BadRequestHttpException("Email not found");
+                throw new NotFoundHttpException("Email not found");
             }
             var tokenExist = await _distributedCache.GetStringAsync($"TokenForgetPassword:{email}");
             if (tokenExist != null)
@@ -203,7 +203,7 @@ namespace Restapi_net8.Services.Implementation
                 var userExist = await _usersRepository.GetEmailUser(email);
                 if (userExist == null)
                 {
-                    throw new BadRequestHttpException("Email not found");
+                    throw new NotFoundHttpException("Email not found");
                 }
                 if (userExist.IsVerify)
                 {
@@ -238,7 +238,7 @@ namespace Restapi_net8.Services.Implementation
             var userExist = await _usersRepository.GetEmailUser(email);
             if (userExist == null)
             {
-                throw new BadRequestHttpException("Email not found");
+                throw new NotFoundHttpException("Email not found");
             }
             var tokenExist = await _distributedCache.GetStringAsync($"TokenForgetPassword:{email}");
             if (tokenExist != token)
@@ -262,7 +262,7 @@ namespace Restapi_net8.Services.Implementation
             var userExist = await _usersRepository.GetById(Guid.Parse(userId));
             if (userExist == null)
             {
-                throw new BadRequestHttpException("User not found");
+                throw new NotFoundHttpException("User not found");
             }
             if (!_passwordHasher.VerifyPassword(oldPassword, userExist.Password))
             {
@@ -283,7 +283,7 @@ namespace Restapi_net8.Services.Implementation
             var userExist = await _usersRepository.GetEmailUser(email);
             if (userExist == null)
             {
-                throw new BadRequestHttpException("Email not found");
+                throw new NotFoundHttpException("Email not found");
             }
             if (userExist.IsVerify)
             {
@@ -305,6 +305,36 @@ namespace Restapi_net8.Services.Implementation
             await _distributedCache.SetStringAsync($"TokenVerifyEmail:{email}", GuidString, cacheEntryOptions);
             var mailResponse = await _mailService.SendMailVerify(email, GuidString);
             return new ApiResponse(200, mailResponse, null, null);
+        }
+        public async Task<ApiResponse> GetAllUsersService(GetAllUsers request)
+        {
+            var users = await _usersRepository.GetAllUsers(request);
+            var usersResponse = _mapper.Map<List<UserInfo>>(users);
+            return new ApiResponse(200, "Get all users successful", usersResponse, null);
+        }
+        public async Task<ApiResponse> UpdateRoleService(UpdateRole request, string id)
+        {
+            var userExist = await _usersRepository.GetById(Guid.Parse(id));
+            if (userExist == null)
+            {
+                throw new NotFoundHttpException("User not found");
+            }
+            var userUpdate = new Customer
+            {
+                Role = request.role
+            };
+            await _usersRepository.UpdateAsync(userExist, userUpdate);
+            return new ApiResponse(200, "Update role successful", null, null);
+        }
+        public async Task<ApiResponse>DeleteUserService(string id)
+        {
+            var userExist = await _usersRepository.GetById(Guid.Parse(id));
+            if (userExist == null)
+            {
+                throw new NotFoundHttpException("User not found");
+            }
+            await _usersRepository.SoftDelete(Guid.Parse(id));
+            return new ApiResponse(200, "Delete user successful", null, null);
         }
     }
 }
