@@ -247,11 +247,7 @@ namespace Restapi_net8.Services.Implementation
             }
             var hashedPassword = _passwordHasher.HashPassword(password);
             userExist.Password = hashedPassword;
-            var userToUpdate = new Customer
-            {
-                Password = hashedPassword
-            };
-            await _usersRepository.UpdateAsync(userExist, userToUpdate);
+            await _usersRepository.UpdateAsync(userExist, userExist);
             await _distributedCache.RemoveAsync($"TokenForgetPassword:{email}");
             return new ApiResponse(200, "Reset password successful", null, null);
         }
