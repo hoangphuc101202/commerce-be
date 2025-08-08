@@ -1,12 +1,6 @@
 ![.NET 8.0](https://img.shields.io/badge/.NET-8.0-blue.svg)
 ![C#](https://img.shields.io/badge/language-C%23-blue.svg)
 
-# Member
-
-| Name            | Student Id     | 
-|-----------------|--------------- |
-|Nguyễn Hoàng Phúc| 3120410409     |
-
 # E-Commerce Backend.
 This project is an e-commerce backend API built using .NET 8.0 and C#. It provides a robust and scalable solution for managing an online store that sells model kits. The API handles various functionalities required for an e-commerce platform, including user management, product management, order processing, and payment integration.
 
